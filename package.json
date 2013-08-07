@@ -1,0 +1,17 @@
+{
+  "name": "sandbox",
+  "version": "0.1.0",
+  "description": "Staging & alpha for github.com/chbrown/*",
+  "homepage": "https://github.com/chbrown/sandbox",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/chbrown/sandbox.git"
+  },
+  "author": "Christopher Brown <io@henrian.com> (http://henrian.com)",
+  "license": "MIT",
+  "dependencies": {
+    "async": "*",
+    "natural": "*",
+    "optimist": "*"
+  }
+}
