@@ -18,9 +18,9 @@ def stdout(s):
 def stdoutn(s=''):
     stdout('%s\n' % s)
 
-o =          1
-k =       1000
-m =    1000000
+o = 1
+k = 1000
+m = 1000000
 b = 1000000000
 
 
