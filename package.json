@@ -11,7 +11,9 @@
   "license": "MIT",
   "dependencies": {
     "async": "*",
+    "difflet": "*",
     "natural": "*",
-    "optimist": "*"
+    "optimist": "*",
+    "underscore": "*"
   }
 }

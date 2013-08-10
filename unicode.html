@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link href="static/light.css" rel="stylesheet" type="text/css" />
+<script src="static/lib/underscore.min.js"></script>
+<script src="static/lib/jquery.min.js"></script>
+<style>
+.char {
+  background: #EEE;
+  /*border: 1px solid #DDD;*/
+  display: inline-block;
+  padding: 1px 3px;
+}
+</style>
+
+<!--   http://ghkl/sandbox/unicode.html   -->
+
+<body class="navbar">
+  <div style="border-bottom: 1px solid #999; padding: 2px 10px;">
+    <form id="range">
+      <!-- <input type="range"> -->
+      <label>Start: <input name="range-start" value="0" /></label>
+      <label>End: <input name="range-end" value="1000" /></label>
+      <button type="submit">Display</button>
+    </form>
+  </div>
+
+  <div style="padding: 1em">
+    <p>HTML character representations come in various forms, as literal characters, decimal escapes, hex escapes, or named entities.</p>
+    <div id="display"></div>
+  </div>
+</body>
+
+<script type="text/x-html" id="character_block">
+  <div class="char" title="<%- decimal %>"><%= decimal %></div>
+</script>
+<script src="javascript/chars.js"></script>
+<script>
+var character_template = _.template($('#character_block').html());
+
+$('#range').on('submit', function(ev) {
+  ev.preventDefault();
+  var start = parseInt($('input[name="range-start"]').val(), 10);
+  var end = parseInt($('input[name="range-end"]').val(), 10);
+  display(start, end);
+}).trigger('submit');
+
+function display(start, end) {
+  var $display = $('#display').empty();
+  $display.append('<h2>' + start + ' to ' + end + '</h2>');
+  _.range(start, end + 1).forEach(function(i) {
+    var context = {decimal: '&#' + i + ';'};
+    var html = character_template(context);
+    $display.append(html);
+  });
+}
+
+</script>
