@@ -4,54 +4,144 @@
 <script src="static/lib/underscore.min.js"></script>
 <script src="static/lib/jquery.min.js"></script>
 <style>
-.char {
+#slider {
+  border-bottom: 1px solid #999;
+  position: fixed;
+  height: 24px;
+  top: 0;
+  width: 100%;
+  background: white;
+}
+#slider div {
+  position: absolute;
+  height: 24px;
+  z-index: 500;
+}
+.characters div {
   background: #EEE;
   /*border: 1px solid #DDD;*/
   display: inline-block;
   padding: 1px 3px;
 }
+.characters .highlight {
+  background: #98BCDD;
+}
+h4 {
+  margin: 2px 0;
+}
 </style>
 
 <!--   http://ghkl/sandbox/unicode.html   -->
 
-<body class="navbar">
-  <div style="border-bottom: 1px solid #999; padding: 2px 10px;">
-    <form id="range">
-      <!-- <input type="range"> -->
-      <label>Start: <input name="range-start" value="0" /></label>
-      <label>End: <input name="range-end" value="1000" /></label>
-      <button type="submit">Display</button>
-    </form>
+<body style="padding-top: 28px">
+  <div id="slider">
+    <div class="label" style="left: 0; color: red; padding: 2px; z-index: 1000;"></div>
   </div>
-
-  <div style="padding: 1em">
-    <p>HTML character representations come in various forms, as literal characters, decimal escapes, hex escapes, or named entities.</p>
-    <div id="display"></div>
-  </div>
+  <div class="characters" style="padding: 1em;"></div>
 </body>
 
-<script type="text/x-html" id="character_block">
-  <div class="char" title="<%- decimal %>"><%= decimal %></div>
-</script>
+<!-- <script type="text/x-html" id="character_block"></script> -->
 <script src="javascript/chars.js"></script>
 <script>
-var character_template = _.template($('#character_block').html());
-
-$('#range').on('submit', function(ev) {
-  ev.preventDefault();
-  var start = parseInt($('input[name="range-start"]').val(), 10);
-  var end = parseInt($('input[name="range-end"]').val(), 10);
-  display(start, end);
-}).trigger('submit');
-
-function display(start, end) {
-  var $display = $('#display').empty();
-  $display.append('<h2>' + start + ' to ' + end + '</h2>');
-  _.range(start, end + 1).forEach(function(i) {
-    var context = {decimal: '&#' + i + ';'};
-    var html = character_template(context);
-    $display.append(html);
-  });
+// generic
+function getTopChild(parent) {
+  var fold = window.pageYOffset + parent.offsetTop;
+  var children = parent.childNodes;
+  for (var i = 0, l = children.length; i < l; i++) {
+    var child = children[i];
+    if (child.offsetTop > fold) {
+      return child;
+    }
+  }
 }
+function block(code) {
+  var character = '<div id="' + code + '" title="&amp;#' + code + ';">&#' + code + ';</div> ';
+  if (code % 1000 === 0) {
+    return '<h4>' + code + '</h4> ' + character;
+  }
+  return character;
+}
+var highlight = (function() {
+  // wrap in a closure for the last-highlighted element
+  var last = null;
+  return function(el) {
+    if (last) {
+      last.className = '';
+    }
+
+    if (el) {
+      el.className = 'highlight';
+
+      if (el.id) {
+        // location.hash = el.id; // we don't want to renavigate, though.
+        history.pushState({code: el.id}, 'charCode=' + el.id, '#' + el.id);
+      }
+
+      last = el;
+    }
+
+    return el;
+  };
+})();
+
+
+// config
+var first_code = 1;
+var last_code = 65536;
+// internal
+var characters = document.querySelector('.characters');
+var slider = document.querySelector('#slider');
+
+function add(start, end) {
+  // var start = (index / 100.0 | 0) * 100;
+  // var document.createDocumentFragment();
+  var fragment = '';
+  for (var code = start; code < end; code++) {
+    fragment += block(code);
+  }
+  $(characters).append(fragment);
+
+  var left = 100.0 * start / last_code;
+  var width = 100.0 * (end - start) / last_code;
+  var styles = ['left: ' + left + '%', 'width: ' + width + '%', 'background-color: green'];
+  var slider_segment = '<div style="' + styles.join(';') + '"></div>';
+  $(slider).append(slider_segment);
+}
+
+
+$(function() {
+  var index = parseInt(location.hash.replace(/^#/, ''), 10);
+  // console.log(index);
+  add(index, index + 2000);
+});
+
+
+
+// $(window).on('hashchange', function(ev) {
+//   ev.preventDefault();
+//   console.log('hashchange', ev);
+// });
+slider.addEventListener('mousemove', function(ev) {
+  var frac = (ev.pageX - slider.clientLeft) / slider.clientWidth;
+  var index = frac * (last_code - first_code) + first_code | 0;
+  slider.querySelector('.label').innerHTML = index;
+}, false);
+slider.addEventListener('click', function(ev) {
+  var frac = (ev.pageX - slider.clientLeft) / slider.clientWidth;
+  var index = frac * (last_code - first_code) + first_code | 0;
+  add(index - 1000, index + 1000);
+}, false);
+
+// highlight top character element on scroll
+var onscroll = function() {
+  var child = getTopChild(characters);
+  highlight(child);
+};
+$(window).on('scroll', _.debounce(onscroll, 250, true));
+
+// highlight clicked character element
+$(document).on('click', '.characters > div', function(ev) {
+  highlight(ev.target);
+});
 
 </script>

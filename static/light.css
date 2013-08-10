@@ -40,25 +40,3 @@ td {
   font-size: 90%;
   white-space: nowrap;
 }
-
-/*.control {
-  margin: 10px;
-  float: left;
-}
-.content {
-  padding: 1em;
-}*/
-body.navbar {
-  padding-top: 32px;
-}
-body.navbar div:first-child {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: white;
-}
-body.navbar div:first-child a {
-  padding: 4px;
-  margin: 4px;
-  display: inline-block;
-}
