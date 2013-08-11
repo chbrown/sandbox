@@ -1,3 +1,4 @@
+'use strict'; /*jslint indent: 2, node: true, es5: true */
 var sys = require('sys');
 var OAuth = require('oauth').OAuth;
 var google_request_url = "https://www.google.com/accounts/OAuthGetRequestToken";
@@ -7,7 +8,8 @@ var oa = new OAuth(google_request_url, google_access_url,
 var request_payload = {"scope": "https://spreadsheets.google.com/feeds"};
 
 oa.getOAuthRequestToken(request_payload, function(err, oauth_token, oauth_secret, results) {
-  logerr(JSON.stringify(err));
+  if (err)
+    console.error(JSON.stringify(err));
   console.log('oauth_token: [' + oauth_token + ']');
   console.log('oauth_token_secret: [' + oauth_secret + ']');
   console.log('results: ' + JSON.stringify(results));
@@ -21,14 +23,16 @@ oa.getOAuthRequestToken(request_payload, function(err, oauth_token, oauth_secret
     var code = input.trim();
     console.log("Using verification code: [" + code + "]");
     oa.getOAuthAccessToken(oauth_token, oauth_secret, code, function(err, access_token, access_secret, results) {
-      logerr(JSON.stringify(err));
+      if (err)
+        console.error(JSON.stringify(err));
 
       console.log('oauth_access_token: ' + access_token);
       console.log('oauth_access_token_secret: ' + access_secret);
 
       var target = 'https://spreadsheets.google.com/feeds/spreadsheets/private/full';
       oa.get(target, access_token, access_secret, function(error, data) {
-        logerr(JSON.stringify(err));
+        if (err)
+          console.error(JSON.stringify(err));
         console.log(data);
       });
     });

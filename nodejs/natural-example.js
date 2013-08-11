@@ -1,3 +1,4 @@
+'use strict'; /*jslint indent: 2, node: true, es5: true */
 var natural = require('natural');
 // From https://github.com/NaturalNode/natural
 // npm install natural

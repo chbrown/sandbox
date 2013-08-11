@@ -1,29 +1,30 @@
+'use strict'; /*jslint indent: 2, node: true, es5: true */
 var async = require('async');
 
 function add1(n, callback) {
-    setTimeout(function () {
-        callback(null, n + 1);
-    }, 10);
+  setTimeout(function () {
+    callback(null, n + 1);
+  }, 10);
 }
 
 function mul3(n, callback) {
-    setTimeout(function () {
-        callback(null, n * 3);
-    }, 10);
+  setTimeout(function () {
+    callback(null, n * 3);
+  }, 10);
 }
 
 
 function make4(callback) {
-    setTimeout(function () {
-        callback(null, 4);
-    }, 10);
+  setTimeout(function () {
+    callback(null, 4);
+  }, 10);
 }
 
 var make4add1mul3 = async.compose(mul3, add1, make4);
 
 var callback = function (err, result) {
-   // result now equals 15
-   console.log(result, 'should == 15');
+  // result now equals 15
+  console.log(result, 'should == 15');
 };
 
 // make4add1mul3(callback);

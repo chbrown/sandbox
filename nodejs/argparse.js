@@ -1,8 +1,10 @@
 #!/usr/bin/env node
+'use strict'; /*jslint indent: 2, node: true, es5: true */
 
 var args = (function(argv) {
-  var args = {}, f = 0;
-  for (var i = 0; (arg = argv[i]); i++) {
+  var args = {};
+  var f = 0;
+  for (var arg, i = 0; (arg = argv[i]); i++) {
     if (arg.match(/^-.+/)) {
       var next = argv[i+1];
       if (arg.match(/=/)) {
