@@ -137,7 +137,7 @@ var onscroll = function() {
   var child = getTopChild(characters);
   highlight(child);
 };
-$(window).on('scroll', _.debounce(onscroll, 250, true));
+$(window).on('scroll', _.debounce(onscroll, 100));
 
 // highlight clicked character element
 $(document).on('click', '.characters > div', function(ev) {
