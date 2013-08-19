@@ -171,4 +171,33 @@ console.log('world');
 8. This should be the end.
 
 
+# Dashes:
+
+---
+Input:
+
+    This is what they sometimes call---well, em-dashes.
+
+    There are also en-dashes, which look--say, a little bit like that.
+
+    And we can do em-dashes for pauses --- if you have nothing else to say.
+
+    As well as en-dashes -- like this.
+
+    And maybe a song: with Artist - Title
+
+---
+Output:
+
+This is what they sometimes call---well, em-dashes.
+
+There are also en-dashes, which look--say, a little bit like that.
+
+And we can do em-dashes for pauses --- if you have nothing else to say.
+
+As well as en-dashes -- like this.
+
+And maybe a song: with Artist - Title
+
+
 # EOF
