@@ -1,6 +1,3 @@
-// run like: go run http1mb.go
-// and then benchmark it with:
-// ab -c 100 -n 10000 http://127.0.0.1:8000/
 package main
 
 import "net/http"
