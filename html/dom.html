@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="../static/lib/jquery.min.js"></script>
+  <script src="data-10000.js"></script>
+  <script>
+  function json2array(objects, keys) {
+    // convert a list of objects to flat rows, using the given list of keys
+    var rows = objects.map(function(object) {
+      return keys.map(function(key) {
+        return object[key];
+      });
+    });
+    return rows;
+  }
+
+  function el(tagName, attributes, opts) {
+    /** el: create a new DOM element, using given tag and attributes.
+    1. Appending each of `opts.children` [Node] as child nodes.
+    2. Next, appending `opts.text` String as a text node.
+    3. Finally, appending it to `opts.parent` Node if provided.
+    */
+    var element = document.createElement(tagName);
+    // attributes is an object
+    if (attributes) {
+      for (var name in attributes) {
+        element.setAttribute(name, attributes[name]);
+      }
+    }
+    // text is a string
+    if (opts) {
+      if (opts.children) {
+        for (var i = 0, l = opts.children.length; i < l; i++) {
+          element.appendChild(opts.children[i]);
+        }
+      }
+      if (opts.text) {
+        var text_node = document.createTextNode(opts.text);
+        element.appendChild(text_node);
+      }
+      if (opts.parent) {
+        parent.appendChild(element);
+      }
+    }
+    return element;
+  }
+  </script>
+  <style>
+  </style>
+</head>
+<body>
+  <button id="dom">make dom</button>
+  <button id="html">make html</button>
+  <button id="dom_then_html">make dom then html</button>
+  <button id="html_then_dom">make html then dom</button>
+
+  <div id="content"></div>
+
+  <script>
+  function table2html(cols, rows) {
+    var thead = '<thead><tr><th>' + cols.join('</th><th>') + '</th></tr></thead>';
+    var trs = rows.map(function(cells) {
+      return '<td>' + cells.join('</td><td>') + '</td>';
+    });
+    var tbody = '<tbody><tr>' + trs.join('</tr><tr>') + '</tr></tbody>';
+    return '<table>' + thead + tbody + '</table>';
+  }
+  function table2dom(cols, rows) {
+    var thead_tr = el('tr', null, {
+      children: cols.map(function(col) {
+        return el('th', null, {text: col});
+      })
+    })
+    var thead = el('thead', null, {children: [thead_tr]});
+
+    var tbody_trs = rows.map(function(cells) {
+      return el('tr', null, {
+        children: cells.map(function(cell) {
+          return el('td', null, {text: cell});
+        })
+      });
+    });
+    var tbody = el('tbody', null, {children: tbody_trs});
+
+    return el('table', null, {
+      children: [thead, tbody]
+    });
+  }
+
+  var data_cols = ['created_at', 'text', 'lang', 'name', 'location', 'friends', 'followers'];
+  var data_rows = json2array(data, data_cols);
+  console.log('data_rows.length', data_rows.length);
+
+  var container = document.getElementById('content');
+
+  function empty() {
+    container.innerHTML = '';
+  }
+
+  function table2html_insert() {
+    empty();
+
+    console.time('html');
+    var html = table2html(data_cols, data_rows);
+    container.innerHTML = html;
+    console.timeEnd('html');
+  }
+
+  function table2dom_insert() {
+    empty();
+
+    console.time('dom');
+    var element = table2dom(data_cols, data_rows);
+    container.appendChild(element);
+    console.timeEnd('dom');
+  }
+
+  $('#dom').on('click', function(ev) {
+    table2dom_insert();
+  });
+  $('#html').on('click', function(ev) {
+    table2html_insert();
+  });
+  $('#dom_then_html').on('click', function(ev) {
+    table2dom_insert();
+    table2html_insert();
+  });
+  $('#html_then_dom').on('click', function(ev) {
+    table2html_insert();
+    table2dom_insert();
+  });
+  </script>
+</body>
