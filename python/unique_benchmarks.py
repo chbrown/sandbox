@@ -95,13 +95,13 @@ def ints(n, k):
 
 
 datasets = [
-    ('int[100]: 100 uniques', ints(100, 100)),
-    ('int[100]: 10 uniques', ints(100, 10)),
-    ('int[100]: 1 uniques', ints(100, 1)),
+    # ('int[100]: 100 uniques', ints(100, 100)),
+    # ('int[100]: 10 uniques', ints(100, 10)),
+    # ('int[100]: 1 uniques', ints(100, 1)),
 
     # ('int[1000]: 1000 uniques', ints(1000, 1000)),
     # ('int[1000]: 100 uniques', ints(1000, 100)),
-    # ('int[1000]: 10 uniques', ints(1000, 10)),
+    ('int[1000]: 10 uniques', ints(1000, 10)),
     # ('int[1000]: 1 uniques', ints(1000, 1)),
 
     # ('str[1000]: 1000 unique,', [y for x in range(1) for y in range(1000)]),
@@ -114,10 +114,10 @@ for dataset_name, dataset in datasets:
     random.shuffle(dataset)
 
 uniqs = [
-    # ('f1', f1),
-    # ('f2', f2),
-    # ('f3', f3),
-    # ('f4', f4),
+    ('f1', f1),
+    ('f2', f2),
+    ('f3', f3),
+    ('f4', f4),
     ('f5', f5),
     ('f5a', f5a),
     ('f5b', f5b),
@@ -127,7 +127,7 @@ uniqs = [
 for uniq_name, uniq in uniqs:
     for dataset_name, dataset in datasets:
         func = lambda: uniq(dataset)
-        times = Timer(func).repeat(repeat=3, number=100000)
+        times = Timer(func).repeat(repeat=3, number=10000)
         time_strings = ' '.join('%1.5f' % time for time in sorted(times))
-        print 'uniq={uniq_name} dataset={dataset_name} {time_strings}'.format(
-            time_strings=time_strings, uniq_name=uniq_name, dataset_name=dataset_name)
+        print 'method={uniq_name}\tdataset={dataset_name}\t{time_strings}'.format(
+            uniq_name=uniq_name, dataset_name=dataset_name, time_strings=time_strings)
