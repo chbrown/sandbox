@@ -4,6 +4,11 @@
 #include <time.h>
 #include <arpa/inet.h>
 
+// Compile like: `clang datagrams.c`
+// Run one broadcaster: `./a.out broadcast`
+// Run two listeners: `./a.out listen &`
+//                    `./a.out listen`
+
 #define PORT 9004
 
 int broadcast_loop(void) {
