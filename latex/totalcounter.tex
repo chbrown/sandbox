@@ -1,0 +1,76 @@
+\documentclass{article}
+
+\newcounter{total}
+
+\newcounter{Cenv}
+\newcounter{Citem}[total]
+\newcounter{Eenv}
+\newcounter{Eitem}[total]
+
+\renewcommand\thetotal{(C/E\arabic{total})}
+
+\renewcommand\theCenv{(C\arabic{Cenv})}
+\renewcommand\theCitem{(C\arabic{Cenv}.\roman{Citem})}
+\renewcommand\theEenv{(E\arabic{Eenv})}
+\renewcommand\theEitem{(E\arabic{Eenv}.\roman{Eitem})}
+
+\newenvironment{Cenv}{
+  \setcounter{Cenv}{\value{total}}%
+  \stepcounter{total}%
+  \refstepcounter{Cenv}%
+  \bigskip\par\textbf{Conversation \arabic{Cenv}}%
+  \renewcommand\item[1]{%
+    \\\refstepcounter{Citem}/C/##1%
+  }
+}{\par\bigskip}
+
+\newenvironment{Eenv}{
+  \setcounter{Eenv}{\value{total}}%
+  \stepcounter{total}%
+  \refstepcounter{Eenv}%
+  \bigskip\par\textbf{Example \arabic{Eenv}}%
+  \renewcommand\item[1]{%
+    \\\refstepcounter{Eitem}/E/##1%
+  }
+}{\par\bigskip}
+
+\begin{document}
+
+\section{I'm going to focus on the following references}
+
+\ref{c:1:b} (literally, C1B) and \ref{e:3:a} (should be E3A).
+
+\begin{Cenv}
+  \label{c:1}
+  \item{Conv 1 line a \label{c:1:a}}
+  \item{Conv 1 line b \label{c:1:b}}
+  \item{Conv 1 line c \label{c:1:c}}
+\end{Cenv}
+
+\noindent
+Right, so obviously:
+
+\begin{Cenv}
+  \label{c:2}
+  \item{Conv 2 line a \label{c:2:a}}
+  \item{Conv 2 line b \label{c:2:b}}
+\end{Cenv}
+
+\noindent
+Now you can see the resulting example...
+
+\begin{Eenv}
+  \label{e:3}
+  \item{Ex 3 line a \label{e:3:a}}
+  \item{Ex 3 line b \label{e:3:b}}
+\end{Eenv}
+
+\noindent
+And it all comes back to \ref{c:1:c} (should be C1C) and \ref{c:1:a} (should be C1A).
+
+\medskip
+
+\noindent
+And in total: \ref{c:1} (i.e, C1), \ref{c:2} (= C2), and \ref{e:3} (= E3).
+
+\end{document}
