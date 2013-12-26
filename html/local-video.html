@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <title>'file' protocol resource (local video)</title>
+</head>
+<body>
+  <h2>Instructions &amp; Comments</h2>
+  <ul>
+    <li>Load with
+      <a href="file:///Users/chbrown/github/sandbox/html/local-video.html">file protocol</a> (a decent browser will not follow an href with to a file:// URL, so you will have to copy &amp; paste the url to your address bar)
+      <pre>file:///Users/chbrown/github/sandbox/html/local-video.html</pre>
+      <p>This should let you see both static server and file:// resources below.</p>
+    </li>
+    <li>Load with
+      <a href="http://ghkl/sandbox/html/local-video.html">static server</a>
+      <pre>http://ghkl/sandbox/html/local-video.html</pre>
+      <p>The file:// resource below should be broken (restricted). Firefox's error message is off-base, unfortunately, but Chrome puts it nicely: "Not allowed to load local resource: file:///Users/chbrown/github/sandbox/static/sample-ikea.webm"</p>
+    </li>
+  </ul>
+  <p>
+    <i>Nota bene</i>:
+    If you try this in Firefox with a <code>video/mp4</code> video file, it will not show anything at all and may lock up.</p>
+  <p>
+    This is because Firefox cannot decode the <code>mp4</code> format; normally, if presented with a static resource for the movie, it will give a sane error message to this effect, but compounded with the file:// protocol test, it is simply confounded and doesn't know how to handle the combination.</p>
+  <p>
+    This is not an issue with WebKit, i.e., Chrome and Safari.</p>
+
+  <hr />
+
+  <h1>Local video source (<code>file:</code> protocol)</h1>
+  <div>
+    <video width="640" height="360" controls>
+      <source src="file:///Users/chbrown/github/sandbox/static/sample-ikea.webm" type="video/webm">
+    </video>
+  </div>
+  <h4><code>HTML</code>:</h4>
+  <pre>
+    &lt;video width=&quot;640&quot; height=&quot;360&quot; controls&gt;
+        &lt;source src=&quot;file:///Users/chbrown/github/sandbox/static/sample-ikea.webm&quot; type=&quot;video/webm&quot;&gt;
+    &lt;/video&gt;
+  </pre>
+
+  <hr />
+
+  <h1>Static video source (<code>http:</code> protocol)</h1>
+  <div>
+    <video width="640" height="360" controls>
+      <source src="../static/sample-ikea.webm" type="video/webm">
+    </video>
+  </div>
+  <h4><code>HTML</code>:</h4>
+  <pre>
+    &lt;video width=&quot;640&quot; height=&quot;360&quot; controls&gt;
+        &lt;source src=&quot;../static/sample-ikea.webm&quot; type=&quot;video/webm&quot;&gt;
+    &lt;/video&gt;
+  </pre>
+
+  <hr />
+</body>
+</html>
