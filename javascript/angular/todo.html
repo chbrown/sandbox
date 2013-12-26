@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!-- http://ghkl/sandbox/javascript/angular/todo.html -->
+<html>
+<head>
+  <script src="../../static/lib/angular.min.js"></script>
+</head>
+<body>
+  <h2>Todo list</h2>
+  <div ng-controller="TodoMain">
+    <span>{{remaining()}} of {{todos.length}} remaining</span>
+    [ <a href="" ng-click="archive()">archive</a> ]
+    <ul class="unstyled">
+      <li ng-repeat="todo in todos">
+        <input type="checkbox" ng-model="todo.done">
+        <span class="done-{{todo.done}}">{{todo.text}}</span>
+      </li>
+    </ul>
+    <form ng-submit="addTodo()">
+      <input type="text" ng-model="todoText"  size="30"
+             placeholder="add new todo here">
+      <input class="btn-primary" type="submit" value="add">
+    </form>
+  </div>
+</body>
+
+<body ng-app>
+  <div ng-app>
+    <label>Name:</label>
+    <input type="text" ng-model="nameString" placeholder="Enter a name here">
+    <hr>
+    <h3>Hello {{nameString}}!</h3>
+    <h6>You still there, {{nameString}}?</h6>
+  </div>
+  <br /><br /><hr><br /><br />
+  <div ng-app>
+    <input type="text" ng-model="nameString2" placeholder="Enter another name here">
+  </div>
+</body>
+</html>
+
+
+ <div ng-controller="TodoCtrl">
+  <span>{{remaining()}} of {{todos.length}} remaining</span>
+    [ <a href="" ng-click="archive()">archive</a> ]
+  <ul class="unstyled">
+    <li ng-repeat="todo in todos">
+    <input type="checkbox" ng-model="todo.done">
+    <span class="done-{{todo.done}}">{{todo.text}}</span>
+    </li>
+  </ul>
+  <form ng-submit="addTodo()">
+    <input type="text" ng-model="todoText" size="30" placeholder="add new todo here">
+    <input class="btn-primary" type="submit" value="add">
+  </form>
+</div>

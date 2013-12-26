@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <!-- http://ghkl/sandbox/javascript/angular/ngstorage.html -->
+    <script src="../../static/lib/angular.min.js"></script>
+    <!-- ngStorage docs: https://github.com/gsklee/ngStorage -->
+    <script src="https://rawgithub.com/gsklee/ngStorage/master/ngStorage.min.js"></script>
+
+    <script>
+      angular.module('app', [
+        'ngStorage'
+      ]).
+
+      controller('Ctrl', function(
+        $scope,
+        $localStorage
+      ) {
+        $scope.$storage = $localStorage.$default({
+          x: 42,
+          y: 3
+        });
+        console.log($scope.$storage);
+      });
+
+      // manual one-way watching (doesn't watch for localStorage changes)
+      // $scope.valwatched = $localStorage.valwatched || 'initvalwa';
+      // $scope.$watch('valwatched', function() {
+      //   console.log('valwatched watch triggered');
+      //   $localStorage.valwatched = $scope.valwatched;
+      // });
+    </script>
+  </head>
+
+  <body>
+    <div ng-app="app">
+      <div ng-controller="Ctrl">
+        <button ng-click="$storage.x = $storage.x + 1">{{$storage.x}}</button> + <button ng-click="$storage.y = $storage.y + 1">{{$storage.y}}</button> = {{$storage.x + $storage.y}}
+        <button ng-click="$storage.$reset()">Reset</button>
+      </div>
+    </div>
+  </body>
+
+</html>
