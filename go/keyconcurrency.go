@@ -37,6 +37,9 @@ func atexit() {
 }
 
 func readkeys(stream *os.File, keys chan string) {
+    // Look into using https://github.com/nsf/termbox-go instead?
+    // Or the detection method used in https://github.com/TooTallNate/keypress/blob/master/index.js,
+    //   which in turn refers to http://www.midnight-commander.org/browser/lib/tty/key.c ?
     reader := bufio.NewReader(stream)
     buf := make([]byte, 0)
     for {
