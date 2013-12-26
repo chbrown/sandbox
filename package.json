@@ -15,5 +15,12 @@
     "natural": "*",
     "optimist": "*",
     "underscore": "*"
-  }
+  },
+  "staticDependencies": {
+    "underscore": "*",
+    "jquery": "*",
+    "backbone": "*",
+    "angular": "*"
+  },
+  "staticPattern": "static/lib/{file}"
 }
