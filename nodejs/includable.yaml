@@ -1,0 +1,8 @@
+hello: world
+btw:
+  disclaimer:
+    - You
+    - cannot
+    - currently
+    - use anchors declared in this document
+    - by their alias in the document that includes this document
