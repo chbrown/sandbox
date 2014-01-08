@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+<title>D3 sandbox</title>
+
+<script src="../static/lib/jquery.min.js"></script>
+<script src="../static/lib/d3.min.js"></script>
+
+<div id="container">
+  <div id="controls">
+  </div>
+  <div id="content">
+    <div id="chart">
+    </div>
+  </div>
+</div>
+
+Okay now run <code>a()</code> in the console.
+
+<hr>
+
+<script>
+$(function() {
+  resize();
+  // generator.step();
+});
+$(document).on('keydown', function(ev) {
+  // newline: 32, space: 13
+  if (ev.which === 32 || ev.which === 13) {
+    // generator.step();
+  }
+});
+$('#reload').click(function() {
+  // generator.step();
+});
+
+var chart = d3.select('#chart');
+
+function resize() {
+  return;
+  var width = $('#chart').width();
+  var height = $(window).height() - $('#controls').outerHeight(true) - 12;
+  $('#chart').height(height);
+  var svg = d3.select('#chart').select('svg');
+  svg.attr('width', width).attr('height', height);
+}
+$(window).resize(resize);
+
+var ps = d3.select("body").selectAll("p")
+var ps_sel = ps.data([4, 8, 15, 16, 23, 42]); // , _.identity
+
+var ps_enter = ps_sel.enter();
+var per_p = ps_enter.append("p").text(function(d, i) { return "Para " + d + " (" + i + ")!"; });
+
+
+function a() {
+  var sel = d3.select("body").selectAll("p").data([8, 0, 0, 0, 0, 2, 1, 45, 9]); // , _.identity
+  sel.enter().append("p");
+  sel.text(function(d, i) {
+    console.log(d, i);
+    return "New para " + d + " (" + i + ")!";
+  });
+}
+
+</script>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script src="../static/lib/jquery.min.js"></script>
+<link href="../static/lib/bootstrap.min.css" rel="stylesheet">
+<style>
+#box {
+  width: 210px;
+  height: 100px;
+  margin: 5px;
+}
+.compbox {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  margin: 5px;
+}
+form {
+  margin: 10px;
+}
+</style>
+
+<form method="POST" action="https://www.mturk.com/mturk/externalSubmit">
+  <input type="hidden" name="assignmentId" />
+  <input type="hidden" name="colorHex" />
+  <input type="hidden" name="index" />
+
+  <h3>Color perception judgments</h3>
+  <p>There is a colored rectangle below this paragraph.</p>
+  <table cellpadding="5" cellspacing="10">
+    <tr>
+      <td style="width: 240px">
+        <div id="box"></div>
+      </td>
+      <td>
+        <b>In the colored rectangle to the left, is the color red or orange?</b>
+        <div>
+          <label class="radio inline">
+            <input type="radio" name="or" value="red"> Red
+          </label>
+          <label class="radio inline">
+            <input type="radio" name="or" value="orange"> Orange
+          </label>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <b>How confident are you about that choice?</b>
+        <div>
+          <label class="radio inline">
+            <input type="radio" name="conf" value="low"> Just a guess
+          </label>
+          <label class="radio inline">
+            <input type="radio" name="conf" value="mid"> Reasonably sure
+          </label>
+          <label class="radio inline">
+            <input type="radio" name="conf" value="high"> Very confident
+          </label>
+        </div>
+      </td>
+    </tr>
+    <tr id="compare_prev">
+      <td>
+        <div class="compbox a"></div>
+        <div class="compbox b"></div>
+      </td>
+      <td>
+        <b>Of the two rectangles to the left, which is <i>redder</i>, left or right?</b>
+        <div>
+          <label class="radio inline">
+            <input type="radio" name="prev" value="left"> Left
+          </label>
+          <label class="radio inline">
+            <input type="radio" name="prev" value="right"> Right
+          </label>
+        </div>
+      </td>
+    </tr>
+    <tr id="compare_next">
+      <td>
+        <div class="compbox a"></div>
+        <div class="compbox b"></div>
+      </td>
+      <td>
+        <b>Of the two rectangles to the left, which is <i>redder</i>, left or right?</b>
+        <div>
+          <label class="radio inline">
+            <input type="radio" name="next" value="left"> Left
+          </label>
+          <label class="radio inline">
+            <input type="radio" name="next" value="right"> Right
+          </label>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div style="height: 1px; overflow: hidden;">
+          <input type="text" name="overall" style="margin: 2px">
+        </div>
+      </td>
+      <td style="text-align: center">
+        <button class="btn btn-primary">Submit</button>
+      </td>
+    </tr>
+  </table>
+</form>
+
+<script>
+// colors: http://jsfiddle.net/SNP8v/8/
+var red_orange_range = ["#f70d49", "#f82048", "#f82b47", "#f93547", "#f93d46", "#fa4445", "#fa4b44", "#fb5143", "#fb5742", "#fc5c41", "#fc6240", "#fd673f", "#fd6c3e", "#fd713c", "#fe753b", "#fe7a3a", "#fe7e38", "#fe8337", "#ff8735", "#ff8c33", "#ff9031", "#ff942f", "#ff982d", "#ff9c2b", "#ffa028", "#ffa426", "#ffa823", "#ffac1f", "#ffb01b", "#ffb417", "#ffb811", "#ffbc0a"];
+
+function queryParam(name, default_value) {
+  var m = window.location.href.match(new RegExp(name + '=([^&#]+)'));
+  return m ? m[1] : default_value;
+}
+
+$(function() {
+  var assignmentId = queryParam('assignmentId', 'ASSIGNMENT_ID_NOT_AVAILABLE');
+  var index_str = queryParam('index', 0);
+  var colors = red_orange_range;
+  var index = Math.max(0, Math.min(colors.length - 1, parseInt(index_str, 10)));
+  var prev_color = colors[Math.max(0, index - 1)];
+  var color = colors[index];
+  var next_color = colors[Math.min(colors.length - 1, index + 1)];
+
+  if (assignmentId == "ASSIGNMENT_ID_NOT_AVAILABLE") {
+    $('button').removeClass('btn-primary').addClass('btn-info disabled');
+  }
+
+  $('[name=assignmentId]').val(assignmentId);
+  $('[name=index]').val(index_str);
+  $('[name=colorHex]').val(color.replace('#', ''));
+
+  $('#box').css('background-color', color);
+
+  $('#compare_prev .a').css('background-color', prev_color);
+  $('#compare_prev .b').css('background-color', color);
+  $('#compare_next .a').css('background-color', color);
+  $('#compare_next .b').css('background-color', next_color);
+
+  if (Math.random() > 0.5) {
+    $('#compare_next').insertBefore($('#compare_prev'));
+  }
+
+});
+</script>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+  body { margin: 0; padding: 0; }
+  hr {
+    border: 1px solid black;
+    height: 0px;
+    padding: 0;
+    margin: 5px;
+
+    /*-moz-transform:rotate(90deg);*/
+    /*-webkit-transform:rotate(90deg);*/
+    -webkit-transform-origin:50% 0%;
+    -moz-transform-origin:50% 0%;
+    transform-origin:50% 0%;
+    /*transform:rotate(90deg);*/
+  }
+</style>
+<body></body>
+<script>
+for (var i = 0; i < 400; i++) {
+  var degrees = Math.random() * 180;
+  var hr = document.createElement('hr');
+  hr.style['-webkit-transform'] = 'rotate(' + degrees + 'deg)';
+  document.body.appendChild(hr);
+}
+</script>

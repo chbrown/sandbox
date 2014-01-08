@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<style type="text/css">
+  body { margin: 0; padding: 0; }
+  #container { margin: 20px auto; text-align: center; }
+  canvas { border: 1px dotted #aaa; }
+</style>
+<script src="../static/lib/jquery.min.js"></script>
+
+<div id="container">
+  <p>Click and drag to draw a new rectangle.
+    You may need to reset first.
+    Click "Fit" to draw rectangles containing your rectangles.</p>
+  <canvas width="800" height="400" id="surface"></canvas>
+  <div style="margin: 20px 0">
+    <input type="button" id="reset" value="" /> &nbsp;
+    <input type="button" id="fit" value="Fit" />
+  </div>
+</div>
+
+<script>
+var draft_rectangle = {x1: -1, y1: -1, x2: -1, y2: -1};
+var canvas;
+var context;
+var dummy;
+
+function getStoredRectangles() {
+  try {
+    return JSON.parse(localStorage.rectangles);
+  }
+  catch(exc) {
+    console.log(exc);
+    return [];
+  }
+}
+function setStoredRectangles(rectangles) {
+  localStorage.rectangles = JSON.stringify(rectangles);
+}
+function addStoredRectangle(rectangle) {
+  var stored_rectangles = getStoredRectangles();
+  stored_rectangles.push(rectangle);
+  setStoredRectangles(stored_rectangles);
+}
+// if (localStorage.rectangles === undefined) {
+  // localStorage.rectangles = []; // list of {x: 0, y: 0, x2: 10, y2: 10}
+// }
+function redraw() {
+  canvas.width = canvas.width;
+  context = canvas.getContext("2d");
+  context.translate(0.5, 0.5);
+  context.strokeStyle = '#000'
+  var stored_rectangles = getStoredRectangles();
+  for (var i = 0; i < stored_rectangles.length; i++) {
+    var rect = stored_rectangles[i];
+    context.strokeRect(rect.x1, rect.y1, rect.x2 - rect.x1, rect.y2 - rect.y1);
+  }
+  context.strokeStyle = '#6E98C2'; // light grey blue
+  if (draft_rectangle.x1 !== -1 && draft_rectangle.y1 !== -1) {
+    var rect = draft_rectangle;
+    context.strokeRect(rect.x1, rect.y1, rect.x2 - rect.x1, rect.y2 - rect.y1);
+  }
+}
+function overlap(rect1, rect2) {
+  return rect1.x1 < rect2.x2 && rect1.x2 > rect2.x1 && rect1.y1 < rect2.y2 && rect1.y2 > rect2.y1;
+}
+function bounds(rect1, rect2) {
+  return {x1: Math.min(rect1.x1, rect2.x1), y1: Math.min(rect1.y1, rect2.y1),
+    x2: Math.max(rect1.x2, rect2.x2), y2: Math.max(rect1.y2, rect2.y2)};
+}
+function fitBounds(rect1, rect2) {
+  var width = (rect1.x2 - rect1.x1) + (rect2.x2 - rect2.x1);
+  var height = (rect1.y2 - rect1.y1) + (rect2.y2 - rect2.y1);
+  return {width: width, height: height};
+}
+function fitShifts(rect1, rect2) {
+  var shift_x = 0, shift_y = 0;
+  if (rect1.y1 < rect2.y2)
+    shift_y = rect2.y2 - rect1.y1;
+  else if (rect1.y2 < rect2.y1)
+    shift_y = rect2.y2 - rect1.y1;
+  var width = (rect1.x2 - rect1.x1) + (rect2.x2 - rect2.x1);
+  var height = (rect1.y2 - rect1.y1) + (rect2.y2 - rect2.y1);
+  return {width: width, height: height};
+}
+
+function fit() {
+  var stored_rectangles = getStoredRectangles();
+  // a list of never overlapping rectangles (if they overlapped, they'd be one glob), with weights
+  var globs = stored_rectangles.map(function(rect) { rect.weight = 1; return rect; });
+
+  for (var ii = 0; ii < globs.length; ii++) {
+    var rect_i = globs[ii];
+    for (var jj = 0; jj < globs.length; jj++) {
+      var rect_j = globs[jj];
+      if (overlap(rect_i, rect_j)) {
+        var new_bounds = fitBounds(rect_i, rect_j);
+        // want to shift
+        var y_adjustment = new_bounds.height - 0;
+        var b = bounds(rect_i, rect_j);
+        context.strokeRect(b.x1, b.y1, b.x2 - b.x1, b.y2 - b.y1);
+      }
+    }
+  }
+
+  context.strokeStyle = '#d24'; // reddish
+
+  for (var i = 0; i < stored_rectangles.length; i++) {
+    rect_i = stored_rectangles[i];
+    for (var j = i + 1; j < stored_rectangles.length; j++) {
+      rect_j = stored_rectangles[j];
+      if (overlap(rect_i, rect_j)) {
+        var b = bounds(rect_i, rect_j);
+        context.strokeRect(b.x1, b.y1, b.x2 - b.x1, b.y2 - b.y1);
+      }
+    }
+  }
+}
+
+$(function() {
+  canvas = $('#surface')[0];
+
+  canvas.addEventListener('mousedown', function(ev) {
+    draft_rectangle.x1 = ev.offsetX;
+    draft_rectangle.y1 = ev.offsetY;
+    // var cell = getCursorPosition(e);
+    // console.log(ev);
+  }, false);
+
+  canvas.addEventListener('mouseup', function(ev) {
+    if (draft_rectangle.x2 !== -1 && draft_rectangle.y2 !== -1) {
+      var rect = draft_rectangle;
+      // normalize x,y to top-left, and x2,y2 to bottom-right.
+      rect = {x1: Math.min(rect.x1, rect.x2), y1: Math.min(rect.y1, rect.y2),
+        x2: Math.max(rect.x1, rect.x2), y2: Math.max(rect.y1, rect.y2)}
+      addStoredRectangle(rect);
+      $('#reset').prop('value', 'Reset ' + getStoredRectangles().length + ' rectangles');
+      draft_rectangle = {x1: -1, y1: -1, x2: -1, y2: -1};
+    }
+  }, false);
+
+  canvas.addEventListener('mousemove', function(ev) {
+    // console.log(ev.offsetX + "," + ev.offsetY)
+    draft_rectangle.x2 = ev.offsetX;
+    draft_rectangle.y2 = ev.offsetY;
+    redraw();
+  }, false);
+
+  $('#reset').click(function() {
+    setStoredRectangles([]);
+    redraw();
+  }).prop('value', 'Reset ' + getStoredRectangles().length + ' rectangles');
+
+  $('#fit').click(function() {
+    fit();
+  });
+
+  redraw();
+});
+
+</script>

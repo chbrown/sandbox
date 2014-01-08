@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<section>
+  <h2>Body</h2>
+  <p>U.S. Health Insurance Cost Rises Sharply, Study Finds
+By REED ABELSON 2:22 PM ET
+The cost of health insurance this year climbed more sharply than in previous years, outstripping any growth in wages and adding uncertainty about the pace of rising medical costs.
+Pakistanis Tied to 2007 Border Attack on Americans
+By CARLOTTA GALL
+Details of the ambush indicate that U.S. officials were aware of Pakistan’s sometimes duplicitous role long before it was linked to an attack on the American Embassy in Kabul.
+Europe Nears Accord on Bailout That May Be Inadequate
+By STEVEN ERLANGER 25 minutes ago
+As the euro crisis has unfolded, Angela Merkel, Germany’s chancellor, finds herself fighting for measures that most experts have already dismissed as too feeble.</p>
+</section>
+<h4>Selection</h4>
+<div id="sel"></div>
+
+<script>
+setInterval(function() {
+  var timestamp = new Date().toISOString().split('.')[0].replace(/T/, ' ');
+  var selection = window.getSelection();
+  document.getElementById('sel').innerHTML = timestamp + ": " + selection;
+}, 250);
+</script>

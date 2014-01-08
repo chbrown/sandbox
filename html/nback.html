@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>N-back</title>
+<style>
+  body {
+    font: 11px Helvetica;
+    margin: 0;
+    padding: 0;
+  }
+  nav {
+    padding: 10px 20px;
+    text-align: center;
+  }
+  #panel_container div {
+    font-size: 0;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+  }
+  footer {
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 4px;
+    position: absolute;
+    bottom: 0;
+    font-size: 90%;
+  }
+  footer a {
+    color: black;
+  }
+  #tabletop {
+    margin: 0 auto;
+  }
+  #tabletop div {
+    margin: 20px;
+  }
+  .nine {
+    margin: 0 auto;
+  }
+  .nine td {
+    padding: 5px;
+    /*font-size: 0px;*/
+  }
+  .nine td div {
+    height: 75px;
+    width: 75px;
+    text-align: center;
+    color: white;
+    font-size: 200%;
+    background-color: #174040;
+  }
+  .nine td span {
+    line-height: 70px;
+  }
+  .nine td.active div {
+    background-color: #d98162;
+  }
+  #instructions p {
+    text-align: center;
+
+  }
+  #instructions div {
+    margin: 10px auto;
+  }
+  #progress_container {
+    width: 245px;
+  }
+  #progress {
+    display: inline-block;
+    height: 10px;
+    background-color: #a65858;
+  }
+  /* green #174040
+   orange #d98162
+   red #a65858 */
+</style>
+<script src="../static/lib/jquery.min.js"></script>
+<script>
+  function Nine($parent, $instructions) {
+    var self = this;
+    this.$instructions = $instructions;
+    // this.states = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'];
+    // the boxes are labeled 0 through 9:
+    // 0 1 2
+    // 3 4 5
+    // 6 7 8
+    var $table = this.$table = $('<table class="nine"></table>').appendTo($parent);
+    for (var r = 0; r < 3; r++) {
+      var $tr = $('<tr></tr>').appendTo($table);
+      for (var c = 0; c < 3; c++) {
+        $tr.append('<td data-id="' + ((r * 3) + c) + '"><div /></td>');
+      }
+    }
+
+    $table.find('td').eq(4).children().append('<span>+</span>');
+
+    $table.on('click', 'td', function(ev) {
+      self.click(parseInt($(this).attr('data-id'), 10));
+    });
+
+    // changing state variables:
+    this.history = [];
+    this.n = 0;
+    this.streak = 0;
+    // this.levelup = 5;
+
+    this.next();
+  }
+  Nine.prototype.click = function(id) {
+    // console.log("Nine.click", id, "actually", this.history[this.history.length - 1]);
+
+    // update their score, accordingly
+    var target_index = (this.history.length - 1) - this.n;
+    if (this.history[target_index] === id) {
+      this.streak++;
+      $('#instructions p').html('correct.');
+    }
+    else {
+      // break their streak. decrement them, but don't let them go under 0
+      this.streak = 0; // Math.max(this.streak - 1, 0);
+      $('#instructions p').html('wrong!');
+    }
+
+
+    // and level them up if they deserve it
+    var levelup = Math.pow(3, this.n + 1)
+    if (this.streak > levelup) {
+      this.n++;
+      this.streak = 0;
+      $('#progress').animate({width: (this.streak / levelup)*245 + 'px'}, 300);
+
+      this.dim();
+      $('#instructions p').html('careful, n is increasing! the button you should click next is <b>the one you just clicked</b>');
+      $('nav h2').html('N = ' + this.n);
+
+      var self = this;
+      setTimeout(function() {
+        self.next();
+      }, 1000);
+    }
+    else {
+      $('#progress').animate({width: (this.streak / levelup)*245 + 'px'}, 100);
+      this.next();
+    }
+  };
+  Nine.prototype.dim = function() {
+    this.$table.find('td').animate({opacity: 0.5}, 100);
+  };
+  Nine.prototype.draw = function(active_id) {
+    var $tds = this.$table.find('td').removeClass('active').css({opacity: 1.0});
+
+    setTimeout(function() {
+      $tds.eq(active_id).addClass('active');
+    }, 100);
+  };
+  Nine.prototype.next = function() {
+    var state = Math.random()*9 | 0;
+    this.history.push(state);
+    this.draw(state);
+    return state;
+  };
+
+  $(function() {
+    var $parent = $('#board');
+    var $instructions = $('#board');
+    var board = new Nine($parent, $instructions);
+  });
+
+</script>
+<nav>
+  <h2>N-back</h2>
+</nav>
+<div style="content">
+  <div id="board"></div>
+  <div id="instructions">
+    <div id="progress_container">
+      <div id="progress"></div>
+    </div>
+    <p>click the light square</p>
+  </div>
+</div>
+<footer>
+  <a href="mailto:io@henrian.com">Christopher Brown</a> &middot; <a href="http://henrian.com/">henrian.com</a>
+</footer>
