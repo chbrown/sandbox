@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>The Qwantz Shuffle</title>
+<script src="../static/lib/jquery.min.js"></script>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  section {
+    position: relative;
+    margin: 10px;
+  }
+  span {
+    display: block;
+    position: absolute;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+  }
+  footer {
+    position: absolute;
+    font: 11px Helvetica;
+    padding: 10px;
+  }
+  img {
+    visibility: hidden;
+  }
+</style>
+<section>
+  <span style="width: 244px; height: 242px; top:   0  ; left:   0  ; background-position:    0      0  ;"></span>
+  <span style="width: 129px; height: 242px; top:   0  ; left: 244px; background-position: -244px    0  ;"></span>
+  <span style="width: 362px; height: 242px; top:   0  ; left: 373px; background-position: -373px    0  ;"></span>
+  <span style="width: 195px; height: 258px; top: 242px; left:   0  ; background-position:    0   -242px;"></span>
+  <span style="width: 297px; height: 258px; top: 242px; left: 195px; background-position: -195px -242px;"></span>
+  <span style="width: 243px; height: 258px; top: 242px; left: 492px; background-position: -492px -242px;"></span>
+</section>
+<footer style="top: 510px">
+  Many thanks to <a href="http://www.qwantz.com/">Ryan North</a> for his
+  ability to be endlessly creative within a constrained format.
+  <!-- Or maybe he's just lazy. -->
+</footer>
+
+<script>
+function replacePanel(panel_id) {
+  // 2563 is currently the latest qwantz comic
+  var comic_id = Math.random() * 2563 | 0;
+  var img_url = 'http://www.qwantz.com/comics/comic2-' + comic_id + '.png';
+  $('<img src="' + img_url + '" />').appendTo(document.body).load(function() {
+    // done preloading image, show it
+    $('span').eq(panel_id).css('background-image', 'url(' + img_url + ')');
+    $(this).remove();
+  }).error(function() {
+    replacePanel(panel_id);
+    $(this).remove();
+  });
+}
+for (var panel_id = 0; panel_id < 6; panel_id++) {
+  replacePanel(panel_id);
+}
+setInterval(function() {
+  var panel_id = Math.random() * 6 | 0;
+  replacePanel(panel_id);
+}, 1000);
+</script>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="Shortcut Icon" href="/favicon.ico">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+<canvas style="position: absolute; z-index: -100"></canvas>
+<script>
+Array.prototype.shuffle = function() {
+  // this is not destructive! but it only returns a SHALLOW copy
+  // http://sedition.com/perl/javascript-fy.html
+  var copy = this.slice(0);
+  var i = copy.length;
+  if (i === 0)
+    return [];
+  while (--i) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tempi = copy[i];
+    var tempj = copy[j]; // necessary to split?
+    copy[i] = tempj;
+    copy[j] = tempi;
+  }
+  return copy;
+};
+Array.prototype.mix = function(swaps, distance) {
+  for (var jj = 0; jj < swaps; jj++) {
+    var a = Math.random() * this.length | 0;
+    var half_distance = distance / 2;
+    var dist = (Math.random() * half_distance) + half_distance;
+
+    var b = Math.max(Math.min(a + dist, this.length - 1), 0) | 0;
+    var tmp = this[a];
+    this[a] = this[b];
+    this[b] = tmp;
+  }
+};
+
+var canvas = document.getElementsByTagName('canvas')[0];
+var size = {
+  width: window.outerWidth,
+  height: window.outerHeight
+};
+canvas.setAttribute('width', size.width);
+canvas.setAttribute('height', size.height);
+
+var ctx = canvas.getContext('2d');
+var colors = [
+  [122,191,122],
+  [165,209,112],
+  [208,218,86],
+  [236,213,73],
+  [255,218,90]];
+
+function styleForRGBA(r, g, b, a) {
+  return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
+}
+function styleForColorAlpha(color, a) {
+  return styleForRGBA(color[0], color[1], color[2], a);
+}
+
+var triangles = {
+  left: function(ctx) {
+    ctx.translate(3, 0);
+    // points left
+    ctx.beginPath();
+    ctx.moveTo(15.5, 0.3);
+    ctx.bezierCurveTo(16.5, -0.3, 17.3, 0.1, 17.3, 1.3);
+    ctx.lineTo(17.3, 18.8);
+    ctx.bezierCurveTo(17.3, 20.0, 16.5, 20.5, 15.5, 19.9);
+    ctx.lineTo(0.8, 11.2);
+    ctx.bezierCurveTo(-0.3, 10.6, -0.3, 9.6, 0.8, 9.0);
+    ctx.lineTo(15.5, 0.3);
+    ctx.closePath();
+  },
+  right: function(ctx) {
+      ctx.beginPath();
+      ctx.moveTo(1.9, 19.9);
+      ctx.bezierCurveTo(0.8, 20.5, 0.0, 20.0, 0.0, 18.8);
+      ctx.lineTo(0.0, 1.3);
+      ctx.bezierCurveTo(0.0, 0.1, 0.8, -0.3, 1.9, 0.3);
+      ctx.lineTo(16.6, 9.0);
+      ctx.bezierCurveTo(17.6, 9.6, 17.6, 10.6, 16.6, 11.2);
+      ctx.lineTo(1.9, 19.9);
+      ctx.closePath();
+  }
+}
+function drawTriangle(ctx, type, color) {
+  var alpha = type === 'right' ? (Math.random() / 1.5) : (Math.random() / 3);
+  ctx.fillStyle = styleForColorAlpha(color, alpha);
+  triangles[type](ctx);
+  ctx.fill();
+}
+
+function drawAt(x, y, color, ctx) {
+  ctx.save();
+  var neighbors = [];
+  for (var u = -1; u <= 1; u++) {
+    for (var v = -1; v <= 1; v++) {
+      var neighbor = drawn[[x + u, y + v]];
+      if (neighbor) neighbors.push(neighbor);
+    }
+  }
+  // if (neighbors.length)
+    // color = neighbors[parseInt(neighbors.length * Math.random(), 10)];
+  ctx.translate(x * 20, y * 14.5); // x * 24.5 for nice hexagons
+  drawTriangle(ctx, y % 2 === 0 ^ x % 2 === 0 ? 'left' : 'right', color)
+  ctx.restore();
+}
+var queue = [];
+var drawn = {};
+for (var x = 0; x < size.width / 20.0; x++) {
+  for (var y = 0; y < size.height / 14; y++) {
+    queue.push([x, y]);
+  }
+}
+// queue = queue.shuffle();
+// var arr = [];
+function pos(point) {
+  var x = point[0] * 20;
+  var y = point[1] * 14.5;
+  return Math.pow(x, 2) + Math.pow(y, 2);
+}
+function comparator(left, right) {
+  //return (Math.pow(left[0], 2) + Math.pow(left[1], 2)) > (Math.pow(right[0], 2) + Math.pow(right[1], 2));
+  // arr.push((left[0] + left[1]) > (right[0] + right[1]));
+  return pos(left) - pos(right);
+}
+queue.sort(comparator);
+queue.mix(5000, 300);
+
+function draw() {
+  var last = false;
+  for (var i = 0; i < 10; i++) {
+    last = queue.shift();
+    if (!last) {
+      console.log('Done')
+      return;
+    }
+    var color = colors[parseInt(colors.length * Math.random(), 10)];
+    drawn[last] = color;
+    drawAt(last[0], last[1], color, ctx);
+  }
+  return webkitRequestAnimationFrame(draw);
+}
+draw();
+
+</script>
