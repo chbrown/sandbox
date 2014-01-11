@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="../static/lib/jquery.min.js"></script>
+  <style>
+  section { margin: 10px 0; }
+  footer { margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <nav>
+    <button id="preload">Preload Video A</button>
+    <button id="play">Play Video A</button>
+  </nav>
+  <section id="progress"></section>
+  <section id="ratio"></section>
+  <section id="status"></section>
+  <footer></footer>
+</body>
+<script>
+$('#play').click(play);
+$('#preload').click(preload);
+
+function create_video_html(url) {
+  return '<video width="640" height="360" preload><source src="' + url + '" type="video/webm"></video>';
+}
+
+var threshold = 0.9;
+
+function play() {
+  $('video')[0].play();
+}
+function preload() {
+  // video.
+  var video_html = create_video_html('../static/sample-ikea.webm');
+  var $video = $(video_html).appendTo('footer');
+  var video = $video[0];
+
+  var watch_interval = null;
+  function watch() {
+    var buffered_end = video.buffered.length > 0 ? video.buffered.end(0) : 0;
+
+    $('#progress').html('Buffered: ' + buffered_end.toFixed(2) + ' of ' + video.duration.toFixed(2));
+    var ratio = buffered_end / video.duration;
+    $('#ratio').html('Ratio: ' + ratio.toFixed(2));
+
+    if (ratio >= threshold) {
+      clearInterval(watch_interval);
+      $('#status').html('Threshold (' + threshold.toFixed(2) + ') reached!');
+    }
+  }
+  watch_interval = setInterval(watch, 100);
+}
+</script>
+</html>
