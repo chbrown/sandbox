@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<h2>Currently broken. Sorry.</h2>
+<section>
+  <canvas width="800" height="400" id="board"></canvas>
+  <!-- <button id="reset">Reset</button> -->
+  <!-- <button id="fit">Fit</button> -->
+</section>
+
+<script>
+// Rectangle math. No side-effects.
+function overlap(rect1, rect2) {
+  return rect1.x1 < rect2.x2 && rect1.x2 > rect2.x1 && rect1.y1 < rect2.y2 && rect1.y2 > rect2.y1;
+}
+function bounds(rect1, rect2) {
+  return {
+    x1: Math.min(rect1.x1, rect2.x1), y1: Math.min(rect1.y1, rect2.y1),
+    x2: Math.max(rect1.x2, rect2.x2), y2: Math.max(rect1.y2, rect2.y2)
+  };
+}
+function fitBounds(rect1, rect2) {
+  var width = (rect1.x2 - rect1.x1) + (rect2.x2 - rect2.x1);
+  var height = (rect1.y2 - rect1.y1) + (rect2.y2 - rect2.y1);
+  return {width: width, height: height};
+}
+function fitShifts(rect1, rect2) {
+  var shift_x = 0, shift_y = 0;
+  if (rect1.y1 < rect2.y2) {
+    shift_y = rect2.y2 - rect1.y1;
+  }
+  else if (rect1.y2 < rect2.y1) {
+    shift_y = rect2.y2 - rect1.y1;
+  }
+  var width = (rect1.x2 - rect1.x1) + (rect2.x2 - rect2.x1);
+  var height = (rect1.y2 - rect1.y1) + (rect2.y2 - rect2.y1);
+  return {width: width, height: height};
+}
+</script>
+
+<script>
+function StorageUnit(key, toPlain, fromPlain) {
+  this.key = key;
+  this.toPlain = toPlain;
+  this.fromPlain = fromPlain;
+}
+StorageUnit.prototype.get = function() {
+  try {
+    var raw = JSON.parse(localStorage[this.key]);
+    return this.fromPlain ? this.fromPlain(raw) : raw;
+  }
+  catch (exc) {
+    console.log(exc);
+    return undefined;
+  }
+};
+StorageUnit.prototype.set = function(raw) {
+  localStorage[this.key] = JSON.stringify(this.toPlain ? this.toPlain(raw) : raw);
+};
+
+function ListStorageUnit(key, toPlain, fromPlain) {
+  this.key = key;
+  this.toPlain = toPlain;
+  this.fromPlain = fromPlain;
+  this.cached = false;
+}
+ListStorageUnit.prototype.get = function() {
+  var self = this;
+  if (!this.cached) {
+    var json = localStorage[this.key], raw = [];
+    try {
+      raw = JSON.parse(json);
+    }
+    catch (exc) {
+      console.log('JSON parsing error', exc);
+    }
+    this.cached = raw.map(function(plain) { return self.fromPlain ? self.fromPlain(plain) : plain });
+  }
+  return this.cached;
+};
+ListStorageUnit.prototype.set = function(raw) {
+  var self = this;
+  this.cached = raw;
+  var list = raw.map(function(rich) { return self.toPlain ? self.toPlain(rich) : rich });
+  localStorage[this.key] = JSON.stringify(list);
+};
+ListStorageUnit.prototype.push = function(item) {
+  var list = this.get();
+  list.push(item);
+  this.set(list);
+};
+
+
+function Rectangle(x, y, width, height) {
+  this.x = x;
+  this.y = y;
+  this.width = width;
+  this.height = height;
+}
+Rectangle.fromPlain = function(raw) {
+  return new Rectangle(raw.x, raw.y, raw.width, raw.height);
+};
+Rectangle.prototype.toPlain = function(raw) {
+  return {x: this.x, y: this.y, width: this.width, height: this.height};
+};
+Rectangle.prototype.stroke = function(context, strokeStyle) {
+  context.strokeStyle = strokeStyle;
+  // normalize x,y to top-left, and x2,y2 to bottom-right.
+  // rect = {x1: Math.min(rect.x1, rect.x2), y1: Math.min(rect.y1, rect.y2),
+        // x2: Math.max(rect.x1, rect.x2), y2: Math.max(rect.y1, rect.y2)}
+  context.strokeRect(this.x, this.y, this.width, this.height);
+};
+
+
+// function addStoredRectangle(rectangle) {
+//   var stored_rectangles = ge tStor edRectangles();
+//   stored_rectangles.push(rectangle);
+//   setStoredRectangles(stored_rectangles);
+// }
+// if (localStorage.rectangles === undefined) {
+  // localStorage.rectangles = []; // list of {x: 0, y: 0, x2: 10, y2: 10}
+// }
+// for (var i = 0; i < rectangle_storage.get().length; i++) {
+//   var rect = stored_rectangles[i];
+// }
+
+var rectangle_storage = new ListStorageUnit('rectangles', Rectangle.toPlain, Rectangle.fromPlain);
+var canvas = document.getElementById('board');
+var draft = new Rectangle();
+var ctx;
+var draft;
+
+canvas.addEventListener('mousedown', function(ev) {
+  draft.x = ev.offsetX;
+  draft.y = ev.offsetY;
+  // var cell = getCursorPosition(e);
+  // console.log(ev);
+}, false);
+
+canvas.addEventListener('mouseup', function(ev) {
+  if (draft.width && draft.height) {
+    rectangle_storage.push(draft);
+    draft = new Rectangle();
+  }
+}, false);
+
+canvas.addEventListener('mousemove', function(ev) {
+  // console.log(ev.offsetX + "," + ev.offsetY)
+  draft.width = ev.offsetX - draft.x;
+  draft.height = ev.offsetY - draft.y;
+  webkitRequestAnimationFrame(redraw);
+}, false);
+
+function redraw() {
+  canvas.width = canvas.width;
+
+  ctx.save();
+  ctx.translate(0.5, 0.5);
+
+  rectangle_storage.get().forEach(function(rect) {
+    rect.stroke(ctx, '#000000');
+  });
+  if (draft.height && draft.width) {
+    draft.stroke(ctx, '#6E98C2'); // light grey blue
+  }
+  ctx.restore();
+}
+
+function fit() {
+  var stored_rectangles = get_Stored_Rectangles();
+  // a list of never overlapping rectangles (if they overlapped, they'd be one glob), with weights
+  var globs = stored_rectangles.map(function(rect) { rect.weight = 1; return rect; });
+  for (var ii = 0; ii < globs.length; ii++) {
+    var rect_i = globs[ii];
+    for (var jj = 0; jj < globs.length; jj++) {
+      var rect_j = globs[jj];
+      if (overlap(rect_i, rect_j)) {
+        var new_bounds = fitBounds(rect_i, rect_j);
+        // want to shift
+        var y_adjustment = new_bounds.height - 0;
+        var b = bounds(rect_i, rect_j);
+        context.strokeRect(b.x1, b.y1, b.x2 - b.x1, b.y2 - b.y1);
+      }
+    }
+  }
+
+  for (var i = 0; i < stored_rectangles.length; i++) {
+    rect_i = stored_rectangles[i];
+    for (var j = i + 1; j < stored_rectangles.length; j++) {
+      rect_j = stored_rectangles[j];
+      if (overlap(rect_i, rect_j)) {
+        var b = bounds(rect_i, rect_j);
+        context.stroke( '#d24')
+      }
+    }
+  }
+}
+
+webkitRequestAnimationFrame(redraw);
+
+/*
+$('#reset').click(function() {
+  rectangle_storage.set([]);
+  redraw();
+}).prop('value', 'Reset ' + getStoredRectangles().length + ' rectangles');
+$('#fit').click(function() {
+  fit();
+});
+*/
+</script>
