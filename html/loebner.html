@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<!-- http://ghkl/sandbox/html/loebner.html -->
+<style>
+body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+section {
+  top: 0;
+  position: absolute;
+  height: 50%;
+  width: 50%;
+  vertical-align: top;
+  box-sizing: border-box;
+  padding: 5px;
+  overflow: auto;
+  border: 1px solid #DDD;
+  border-width: 0 1px 1px 0;
+}
+label {
+  font-family: sans-serif;
+  font-size: 110%;
+  font-weight: bold;
+}
+pre {
+  font-family: serif;
+  white-space: pre-wrap;
+  margin-top: 5px;
+}
+#selection {
+  border: 1px solid #CCC;
+  bottom: 0;
+  height: 200px;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: center;
+  width: 300px;
+  padding: 10px;
+  vertical-align: middle;
+}
+</style>
+<script src="../static/lib/jquery.min.js"></script>
+
+<!-- This viewer originally created for demonstration purposes in Minds and Machines -->
+
+<body>
+  <div id="selection">
+    <div>
+      <select>
+        <option>-- choose transcript --</option>
+        <option value="http://loebner.net/Prizef/2007_Contest/logfile.P1.txt">2007 - program 1</option>
+        <option value="http://loebner.net/Prizef/2007_Contest/logfile.P2.txt">2007 - program 2</option>
+        <option value="http://loebner.net/Prizef/2007_Contest/logfile.P3.txt">2007 - program 3</option>
+      </select>
+    </div>
+    <p>The first time you select a transcript, it may take a few seconds to load.</p>
+    <p>Refresh the page to reselect.</p>
+  </div>
+  <div id="playback" style="display: none">
+    <section>
+      <label>Judge left</label>
+      <pre name="local left"></pre>
+    </section>
+    <section style="left: 50%">
+      <label></label>
+      <pre name="remote left"></pre>
+    </section>
+    <section style="top: 50%">
+      <label>Judge right</label>
+      <pre name="local right"></pre>
+    </section>
+    <section style="top: 50%; left: 50%">
+      <label></label>
+      <pre name="remote right"></pre>
+    </section>
+  </div>
+</body>
+
+<script>
+var lines_per_frame = 1;
+
+var getText = function(url, callback) {
+  // callback signature: function(err, text)
+  if (localStorage[url]) {
+    callback(null, localStorage[url]);
+  }
+  else {
+    // damn CORS, why isn't there a setting like "i don't care"
+    // hack using this nice person's service: http://whateverorigin.org/
+    var proxy_url = 'http://whateverorigin.org/get?url=' + encodeURIComponent(url) + '&callback=?';
+    var xhr = $.getJSON(proxy_url).always(function() {
+      if (xhr.status == 200) {
+        var json = xhr.responseJSON || {};
+        var data = json.contents;
+        var status = json.status || {};
+        var statusCode = status.http_code;
+        if (statusCode == '200' && data) {
+          localStorage[url] = data;
+          return callback(null, data);
+        }
+      }
+      callback(xhr);
+    });
+  }
+}
+
+var cells = {};
+$('pre').each(function() {
+  var name = this.getAttribute('name');
+  cells[name] = this;
+});
+
+$('select').on('change', function() {
+  var url = $(this).val();
+  $(this).prop('disabled', true);
+  animate(url);
+});
+
+/** transcript format:
+
+    round_number time_typed time_shown local_or_remote left_or_right character
+
+For example:
+
+    J1 011929736130594503 011929736130593750 local left g
+
+*/
+var displayLine = function(line) {
+  var input_match = line.match(/\w\d (\d+) (\d+) (\w+ \w+) (\S+)/);
+  if (input_match) {
+    // normal input line
+    var typed = input_match[1];
+    var shown = input_match[2];
+    var who = input_match[3];
+    var ch = input_match[4];
+    if (ch === 'space') ch = ' ';
+    else if (ch === 'CR') ch = '\n';
+
+    var el = cells[who];
+
+    if (ch === 'BackSpace') {
+      el.innerHTML = el.innerHTML.slice(0, -1);
+    } else {
+      el.innerHTML += ch;
+    }
+    el.scrollTop = el.scrollHeight;
+    return;
+  }
+
+  var round_match = line.match(/starting round (\d+)\s+left\s*=\s*(.+)\s+right\s*=\s*(.+)\s*/);
+  if (round_match) {
+    var round = round_match[1];
+    var left = round_match[2];
+    var right = round_match[3];
+
+    $('pre').empty();
+    $(cells['remote left']).siblings('label').html('Remote left: ' + left);
+    $(cells['remote right']).siblings('label').html('Remote right: ' + right);
+    return;
+  }
+
+  console.log('No match', line);
+};
+
+var animate = function(url) {
+  getText(url, function(err, text) {
+    if (err) return alert(err);
+
+    $('#selection').remove();
+    $('#playback').show();
+
+    var lines = text.split(/\n/);
+    var index = 3;
+
+    (function loop() {
+      requestAnimationFrame(loop);
+
+      for (var i = 0; i < lines_per_frame; i++) {
+        displayLine(lines[index++] || '');
+      }
+    })();
+  });
+};
+</script>
