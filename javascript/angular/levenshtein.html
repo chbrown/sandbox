@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<head>
+  <!-- http://ghkl/sandbox/javascript/angular/levenshtein.html -->
+  <script src="../../static/lib/angular.js"></script>
+  <script src="../../static/lib/ngStorage.js"></script>
+  <script src="../levenshtein.js"></script>
+  <style>
+  body {
+    margin: 10px;
+  }
+  label {
+    vertical-align: middle;
+  }
+  label, input {
+    font: 100% Helvetica;
+    /*display: block;*/
+  }
+  table {
+    border-collapse: collapse;
+    vertical-align: middle;
+    margin: 0 auto;
+  }
+  table.distances tr:first-child td,
+  table.distances td:first-child {
+    background-color: #CCC;
+  }
+  table.distances td {
+    padding: 5px 8px;
+    border-bottom: 1px solid #AAA;
+    border-right: 1px solid #BBB;
+  }
+  </style>
+</head>
+<body ng-app="app" ng-controller="Ctrl">
+  <table>
+    <tr>
+      <td></td>
+      <td>
+        <label>Target: <input ng-model="$storage.target" ng-change="run()" /></label>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <label>Source: <input ng-model="$storage.source" ng-change="run()" /></label>
+      </td>
+      <td>
+        <table class="distances">
+          <tr>
+            <td></td>
+            <td></td>
+            <td ng-repeat="char in $storage.target.split('') track by $index">{{char}}</td>
+          </tr>
+          <tr ng-repeat="row in distances track by $index">
+            <td>{{$storage.source[$index - 1]}}</td>
+            <td ng-repeat="cell in row track by $index">{{cell}}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+<script>
+var app = angular.module('app', ['ngStorage']);
+
+app.controller('Ctrl', function($scope, $localStorage) {
+  $scope.$storage = $localStorage.$default({
+    source: 'sitting',
+    target: 'kitten',
+  });
+
+  $scope.run = function() {
+    // distances is a (source.length + 1)-long array of (target.length + 1)-long arrays of numbers
+    $scope.distances = levenshtein_matrix($scope.$storage.source, $scope.$storage.target);
+    console.log("Running", $scope.distances);
+  };
+
+  $scope.run();
+});
+</script>
