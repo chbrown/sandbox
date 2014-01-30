@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<head>
+  <!-- http://ghkl/sandbox/javascript/angular/scoping.html -->
+  <meta charset="utf-8">
+  <title>Scoping</title>
+  <style>
+  a {
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid #555;
+    background-color: #CFC;
+  }
+  </style>
+  <script src="../../static/lib/angular.js"></script>
+  <script src="../../static/lib/ngStorage.js"></script>
+</head>
+<script>
+var p = console.log.bind(console);
+var app = angular.module('App', ['ngStorage']);
+
+app.controller('Ctrl', function($scope, $localStorage) {
+  $scope.$storage = $localStorage.$default({
+    selection: 'a'
+  });
+});
+
+app.directive('map', function($localStorage, $http) {
+  return {
+    restrict: 'E',
+    scope: {
+      // test: 'text',
+      // model: '=ngModel'
+      model: '=',
+    },
+    // transclude: true,
+    // require: 'ngModel',
+    link: function(scope, el, attrs) {
+      p('linking...', scope, scope.model);
+    }
+  };
+});
+</script>
+<body ng-app="App" ng-controller="Ctrl">
+  <map model="$storage.selection">
+    <a id="a">Animal starts with _</a>
+    <a id="b">Best starts with _</a>
+    <a id="c">The letter after B is _</a>
+    {{$storage.selection}}
+  </map>
+  <hr />
+  <div>{{$storage.selection}}</div>
+</body>
