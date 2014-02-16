@@ -1,6 +1,7 @@
 // From http://danielbeard.wordpress.com/2010/10/29/listening-for-global-keypresses-in-osx/
 // compile like:
 //     gcc -Wall -o keys_listen keys_listen.m -framework ApplicationServices
+// https://developer.apple.com/library/mac/documentation/Carbon/Reference/QuartzEventServicesRef/Reference/reference.html
 #include <ApplicationServices/ApplicationServices.h>
 
 // CGEventTapCallBack type of function:
