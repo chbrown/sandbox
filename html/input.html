@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<head>
+  <!-- http://ghkl/sandbox/html/input.html -->
+  <title>input focus + mouseup interception</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <p>If you want to select all in a textbox on focus, you have to cancel the mouseup event.</p>
+  <h3>Click in the input element below</h3>
+  <input id="textin" value="example value">
+  <script>
+  var p = console.log.bind(console);
+
+  var input = document.querySelector('input');
+  input.addEventListener('mouseup', function(ev) {
+    p('mouseup', ev.target);
+    ev.preventDefault();
+  });
+  input.addEventListener('focus', function(ev) {
+    p('focus', ev.target);
+    ev.target.select();
+  });
+  </script>
+</body>
