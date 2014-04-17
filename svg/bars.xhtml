@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Dashboard</title>
+
+    <style type="text/css" media="screen">
+        * {
+            font-family: Verdana, Helvetica, Arial, sans-serif;
+            font-size: 11px;
+            color: #333;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        .domain{
+            display:none;
+        }
+        svg line{
+            stroke-width: 3px;
+            stroke: black;
+            fill: none;
+        }
+        svg text {
+            stroke: none;
+            fill: black;
+          }
+    </style>
+</head>
+<body id="app">
+
+<div class="widget"
+     style="position: absolute; width: 300px; height: 300px; z-index: 14; left: 127px; top: 223px; border: 1px solid rgb(135, 206, 235); -webkit-transform: rotate(30deg) ">
+    <div>
+        <div class="visualization-container">
+            <div>
+                <div class="visualization">
+                    <svg  xmlns="http://www.w3.org/2000/svg" width="300px" height="300px">
+                        <g id="chartGroup" transform="translate(50, 50)">
+                            <g class="x axis" transform="translate(0,200)">
+                                <g style="opacity: 1; " transform="translate(0,0)">
+                                    <line class="tick" x2="0" y2="6"></line>
+                                    <text x="0" y="9" dy=".71em" text-anchor="middle">0.0</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(25,0)">
+                                    <line class="tick" x2="0" y2="6"></line>
+                                    <text x="0" y="9" dy=".71em" text-anchor="middle">0.5</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(50,0)">
+                                    <line class="tick" x2="0" y2="6"></line>
+                                    <text x="0" y="9" dy=".71em" text-anchor="middle">1.0</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(75,0)">
+                                    <line class="tick" x2="0" y2="6"></line>
+                                    <text x="0" y="9" dy=".71em" text-anchor="middle">1.5</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(100,0)">
+                                    <line class="tick" x2="0" y2="6"></line>
+                                    <text x="0" y="9" dy=".71em" text-anchor="middle">2.0</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(125,0)">
+                                    <line class="tick" x2="0" y2="6"></line>
+                                    <text x="0" y="9" dy=".71em" text-anchor="middle">2.5</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(150,0)">
+                                    <line class="tick" x2="0" y2="6"></line>
+                                    <text x="0" y="9" dy=".71em" text-anchor="middle">3.0</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(175,0)">
+                                    <line class="tick" x2="0" y2="6"></line>
+                                    <text x="0" y="9" dy=".71em" text-anchor="middle">3.5</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(200,0)">
+                                    <line class="tick" x2="0" y2="6"></line>
+                                    <text x="0" y="9" dy=".71em" text-anchor="middle">4.0</text>
+                                </g>
+                                <path class="domain" d="M0,6V0H200V6"></path>
+                                <line class="axis-line" x1="0" x2="200" y1="0" y2="0" stroke="#000"
+                                      stroke-width="2"></line>
+                            </g>
+                            <g class="y axis">
+                                <g style="opacity: 1; " transform="translate(0,200)">
+                                    <line class="tick" x2="-6" y2="0"></line>
+                                    <text x="-9" y="0" dy=".32em" text-anchor="end">0</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(0,176.60501221277397)">
+                                    <line class="tick" x2="-6" y2="0"></line>
+                                    <text x="-9" y="0" dy=".32em" text-anchor="end">100</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(0,153.21002442554797)">
+                                    <line class="tick" x2="-6" y2="0"></line>
+                                    <text x="-9" y="0" dy=".32em" text-anchor="end">200</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(0,129.81503663832194)">
+                                    <line class="tick" x2="-6" y2="0"></line>
+                                    <text x="-9" y="0" dy=".32em" text-anchor="end">300</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(0,106.42004885109593)">
+                                    <line class="tick" x2="-6" y2="0"></line>
+                                    <text x="-9" y="0" dy=".32em" text-anchor="end">400</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(0,83.02506106386991)">
+                                    <line class="tick" x2="-6" y2="0"></line>
+                                    <text x="-9" y="0" dy=".32em" text-anchor="end">500</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(0,59.630073276643884)">
+                                    <line class="tick" x2="-6" y2="0"></line>
+                                    <text x="-9" y="0" dy=".32em" text-anchor="end">600</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(0,36.235085489417884)">
+                                    <line class="tick" x2="-6" y2="0"></line>
+                                    <text x="-9" y="0" dy=".32em" text-anchor="end">700</text>
+                                </g>
+                                <g style="opacity: 1; " transform="translate(0,12.840097702191855)">
+                                    <line class="tick" x2="-6" y2="0"> </line>
+                                    <text x="-9" y="0" dy=".32em" text-anchor="end">800</text>
+                                </g>
+                                <path class="domain" d="M-6,0H0V200H-6"></path>
+                                <line class="axis-line" x1="0" x2="0" y1="0" y2="200" stroke="#000"
+                                      stroke-width="2"></line>
+                            </g>
+                            <defs>
+                                <linearGradient id="grad2" x1="0%" y1="100%" x2="0%" y2="100%">
+                                    <stop offset="5%" style="stop-color: #e0ffff; stop-opacity: 1; "></stop>
+                                    <stop offset="40%" style="stop-color: #1e90ff; stop-opacity: 1; "></stop>
+                                    <stop offset="80%" style="stop-color: #00bfff; stop-opacity: 1; "></stop>
+                                </linearGradient>
+                                <filter id="f2">
+                                    <feGaussianBlur in="SourceGraphic" stdDeviation="3"></feGaussianBlur>
+                                </filter>
+                            </defs>
+                            <g class="column">
+                                <rect class="mark" x="5" y="104.0190596606662" width="11.666666666666668"
+                                      height="95.9809403393338" fill="aliceblue" stroke="dodgerblue"></rect>
+                                <rect class="mark" x="16.666666666666668" y="128.00980528615295"
+                                      width="11.666666666666668" height="71.99019471384705" style="fill:aliceblue;
+                                      stroke:dodgerblue"></rect>
+                                <rect class="mark" x="28.333333333333336" y="159.4215236036697"
+                                      width="11.666666666666668" height="40.578476396330295" style="fill:aliceblue;
+                                      stroke:dodgerblue"></rect>
+                            </g>
+                            <g class="column">
+                                <rect class="mark" x="55" y="23.15034370065689" width="11.666666666666668"
+                                      height="176.8496562993431" fill="aliceblue" stroke="dodgerblue"></rect>
+                                <rect class="mark" x="66.66666666666667" y="84.03288987629188"
+                                      width="11.666666666666668" height="115.96711012370812" fill="aliceblue"
+                                      stroke="dodgerblue"></rect>
+                                <rect class="mark" x="78.33333333333334" y="41.64531368723942"
+                                      width="11.666666666666668" height="158.35468631276058" fill="aliceblue"
+                                      stroke="dodgerblue"></rect>
+                            </g>
+                            <g class="column">
+                                <rect class="mark" x="105" y="122.11947644827079"
+                                      width="11.666666666666668" height="77.88052355172921" fill="aliceblue"
+                                      stroke="dodgerblue"></rect>
+                                <rect class="mark" x="116.66666666666667" y="39.11527952520461"
+                                      width="11.666666666666668" height="160.8847204747954" fill="aliceblue"
+                                      stroke="dodgerblue"></rect>
+                                <rect class="mark" x="128.33333333333334" y="61.47134994710305"
+                                      width="11.666666666666668" height="138.52865005289695" fill="aliceblue"
+                                      stroke="dodgerblue"></rect>
+                            </g>
+                            <g class="column">
+                                <rect class="mark" x="155" y="17.600999531189842"
+                                      width="11.666666666666668" height="182.39900046881016" fill="aliceblue"
+                                      stroke="red"></rect>
+                                <rect class="mark" x="166.66666666666666" y="89.04639502514482"
+                                      width="11.666666666666668" height="110.95360497485518" style="stroke:black"> </rect>
+                                <rect class="mark" x="178.33333333333334" y="0" width="11.666666666666668"
+                                      height="200" style="fill:red;
+                                      stroke:blue"> </rect>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
