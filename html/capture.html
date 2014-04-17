@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<head>
+  <!-- http://ghkl/sandbox/html/capture.html -->
+  <title>useCapture demo</title>
+  <meta charset="utf-8">
+  <style>
+  div {
+    cursor: normal;
+  }
+  .outer {
+    border: 1px solid green;
+    background-color: #EFE;
+  }
+  .inner {
+    border: 1px solid pink;
+    background-color: #FEE;
+  }
+  </style>
+</head>
+<body>
+  <div class="outer" style="width: 400px; height: 200px;">
+    <p>This div is clickable. Holding command (metaKey) while clicking will call stopPropogation();</p>
+    <div class="inner" style="width: 300px; height: 100px;">
+      <p>This div is also clickable. Holding shift (shiftKey) while clicking will call stopPropogation();</p>
+    </div>
+  </div>
+  <h2>Breakdown</h2>
+
+  <p>Clicking in the inner div will trigger the outer's click-with-capture listener first, then both of the inner's listeners, then the outer's click-without-capture.</p>
+
+  <p>Clicking in the outer div will trigger the outer div's click-with-capture and click-without-capture events (which are the same propogation level) in the order that they were added -- this does not depend on useCapture.</p>
+
+  <p>Command-clicking in the inner div, the outer's click-with-capture can stop propogation into the inner div. Shift-clicking, the inner div can also stop propogation back out into the outer div's click-without-capture listener.</p>
+
+  <p>Command-click the space in the outer div. It seems that two listeners <em>at the same level</em> cannot stop propogation of the other. Command-click the paragraph in the outer div. In this case, the event actually originates above the listeners, so the click-with-capture listener gets it first, and can stop propagation to the outer div's click-without-capture listener.</p>
+
+  <script>
+  var p = console.log.bind(console);
+
+  var outer = document.querySelector('.outer');
+  outer.addEventListener('click', function(ev) {
+    p('outer click useCapture=true, metaKey=' + ev.metaKey);
+    if (ev.metaKey) {
+      // ev.preventDefault();
+      ev.stopPropagation();
+    }
+  }, true);
+  outer.addEventListener('click', function(ev) {
+    p('outer click useCapture=false, metaKey=' + ev.metaKey);
+    if (ev.metaKey) {
+      // ev.preventDefault();
+      ev.stopPropagation();
+    }
+  }, false);
+
+  var inner = document.querySelector('.inner');
+  inner.addEventListener('click', function(ev) {
+    p('inner click useCapture=true, shiftKey=' + ev.shiftKey);
+    if (ev.shiftKey) {
+      // ev.preventDefault();
+      ev.stopPropagation();
+    }
+  }, true);
+  inner.addEventListener('click', function(ev) {
+    p('inner click useCapture=false, shiftKey=' + ev.shiftKey);
+    if (ev.shiftKey) {
+      // ev.preventDefault();
+      ev.stopPropagation();
+    }
+  }, false);
+
+  </script>
+</body>
