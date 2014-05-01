@@ -9,7 +9,7 @@ var argv = require('optimist')
     port: 1151,
   }).argv;
 
-http.createServer(function(req, res) {
+var post = function(req, res) {
   // rsvg-convert --help ...
   // Application Options:
   //   -d, --dpi-x=<float>        pixels per inch [optional; defaults to 90dpi]
@@ -29,11 +29,8 @@ http.createServer(function(req, res) {
   //                              [optional; defaults to None]
   //   -v, --version              show version information
   //   --base-uri                 base uri
-
-  var args = [];
-  if (req.headers.args) {
-    args = req.headers.args.split(/\s+/);
-  }
+  var args_header = req.headers['x-args'];
+  var args = args_header ? args_header.split(/\s+/) : [];
   console.log('$ rsvg-convert', args);
   var proc = child_process.spawn('rsvg-convert', args, {
     // stdin, stdout, stderr
@@ -44,8 +41,32 @@ http.createServer(function(req, res) {
     console.error('rsvg-convert child process error', err);
     res.end();
   });
+  // proc.on('end', function() {
+  //   console.error('end');
+  //   res.end();
+  // });
+
+  // res.setHeader('Content-Type', 'text/plain');
   proc.stdout.pipe(res);
   req.pipe(proc.stdin);
+};
+
+http.createServer(function(req, res) {
+  console.log('req.method', req.method);
+
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Args');
+  res.setHeader('Access-Control-Allow-Methods', '*');
+  // res.setHeader('Access-Control-Expose-Headers', '*');
+  // resp.setHeader("Access-Control-Allow-Headers",
+  //   req.getHeader("Access-Control-Request-Headers"));
+
+  if (req.method == 'POST') {
+    post(req, res);
+  }
+  else {
+    res.end();
+  }
 
 }).listen(argv.port, argv.hostname, function() {
   console.log('listening on http://%s:%d', argv.hostname, argv.port);
