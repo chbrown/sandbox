@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<head>
+  <!-- http://ghkl/sandbox/html/embed.html -->
+  <meta charset="utf-8">
+  <title>Embed</title>
+  <script src="../static/lib/jquery.min.js"></script>
+</head>
+<body>
+
+  <img src="http://henrian.com/static/portrait.jpg" title="Self-portrait" alt="Self-portrait" style="display: block;" />
+
+  <button>Embed</button>
+</body>
+<script>
+
+function embedSrc(el) {
+  var req = new XMLHttpRequest()
+  req.open('GET', el.src);
+  req.responseType = 'blob';
+  req.send();
+  req.onreadystatechange = function() {
+    if (req.readyState == 4) {
+      // console.log(req.response);
+      var reader = new FileReader();
+      reader.addEventListener("loadend", function() {
+        el.src = reader.result;
+        console.log("set img.src to data url");
+      });
+      reader.readAsDataURL(req.response);
+    }
+  };
+}
+
+$('button').on('click', function() {
+  $('img').each(function() {
+    embedSrc(this);
+  });
+});
+</script>
