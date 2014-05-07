@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<!-- http://ghkl/sandbox/javascript/angular/routing.html -->
+<script src="../../static/lib/angular.min.js"></script>
+<script src="../../static/lib/angular-route.min.js"></script>
+
+<body ng-app="app">
+  <h4>Routing example</h4>
+  <fieldset>
+    <a href="/">Root (this has a route and string template)</a><br/>
+    <a href="/story">Story (as does this)</a><br/>
+    <a href="/elsewhere">Elsewhere (leave me be!)</a><br/>
+  </fieldset>
+
+  <main ng-view></main>
+</body>
+
+<script>
+var app = angular.module('app', ['ngRoute']);
+
+app.config(function($routeProvider, $locationProvider) {
+  $routeProvider
+  .when('/', {
+    template: '<h2>Hello there!</h2>',
+  })
+  .when('/story', {
+    template: '<p>I can tell you a story if you come a little closer...</p>',
+  });
+
+  $locationProvider.html5Mode(true);
+});
+
+</script>
