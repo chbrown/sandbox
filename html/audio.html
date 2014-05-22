@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<head>
+  <!-- http://ghkl/sandbox/html/audio.html -->
+  <meta charset="utf-8">
+  <title>Audio</title>
+  <script src="../static/lib/jquery.min.js"></script>
+  <script src="../static/lib/underscore.min.js"></script>
+  <script src="../static/lib/angular.min.js"></script>
+  <script src="../static/lib/ngStorage.min.js"></script>
+</head>
+<body ng-app="app" ng-controller="audioController">
+  <label>
+    <div>Audio source</div>
+    <select ng-model="$storage.selected_source_id"
+      ng-options="source.id as (source.kind + ': ' + source.id) for source in sources"></select>
+  </label>
+
+  <div>
+    <button ng-click="connect()">Connect</button>
+  </div>
+
+  <!-- <fieldset>
+    <legend>Video</legend>
+    <video id="v1" autoplay controls></video>
+  </fieldset> -->
+
+  <!-- <fieldset>
+    <legend>Audio</legend>
+    <audio id="a1" autoplay controls></audio>
+  </fieldset> -->
+
+  <p>References:
+    <a>https://webaudiodemos.appspot.com/input/index.html</a>
+    <a>http://webaudiodemos.appspot.com/TouchPad/index.html</a>
+    <a>http://www.html5rocks.com/en/tutorials/getusermedia/intro/</a>
+    <a>http://www.smartjava.org/content/exploring-html5-web-audio-visualizing-sound</a>
+    <a>https://github.com/mattdiamond/Recorderjs</a>
+  </p>
+
+</body>
+<script>
+/*jslint browser: true */ /*globals _, angular, MediaStreamTrack */
+var p = console.log.bind(console);
+// de-vendor
+var AudioContext = window.AudioContext || window.webkitAudioContext;
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+  navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+// controls
+
+var app = angular.module('app', ['ngStorage']);
+app.controller('audioController', function($scope, $localStorage) {
+  $scope.$storage = $localStorage;
+
+  MediaStreamTrack.getSources(function(sourceInfos) {
+    $scope.$apply(function() {
+      $scope.sources = sourceInfos;
+    });
+  });
+
+  $scope.connect = function() {
+    // function sourceSelected(audioSource, videoSource) {
+    var sourceInfo = _.findWhere($scope.sources, {id: $scope.$storage.selected_source_id});
+    var constraints = {};
+    constraints[sourceInfo.kind] = {
+      optional: [{sourceId: sourceInfo.id}]
+    };
+
+    // navigator.getUserMedia({audio: true, video: true}, ...
+    navigator.getUserMedia(constraints, function(localMediaStream) {
+      // var media_el = document.getElementById('v1');
+      // media_el.src = window.URL.createObjectURL(localMediaStream);
+      window.localMediaStream = localMediaStream;
+      p(localMediaStream.getAudioTracks());
+      p(localMediaStream.getVideoTracks());
+
+    // navigator.getUserMedia({audio: true}, function(localMediaStream) {
+      var microphone = audio_context.createMediaStreamSource(localMediaStream);
+      console.log(microphone);
+      microphone.connect(filter);
+
+      // Note: onloadedmetadata doesn't fire in Chrome when using it with getUserMedia.
+       // video.onloadedmetadata = function(e) {
+       //  p('video.onloadedmetadata
+       //    // Do something with the video here.
+       // };
+      // See crbug.com/110938.
+      // video.onloadedmetadata = function(e) {
+        // Ready to go. Do some stuff.
+      // };
+    }, p);
+  };
+});
+
+var audio_context = new AudioContext();
+var filter = audio_context.createDelay();
+filter.connect(audio_context.destination);
+
+
+function fullLocalMediaStream() {
+  // navigator.getUserMedia({audio: true, video: true}, function(localMediaStream) {
+  navigator.getUserMedia({audio: true}, function(localMediaStream) {
+    // window.localMediaStream = localMediaStream;
+
+    // var audio_el = document.getElementById('a1');
+    // audio_el.src = window.URL.createObjectURL(localMediaStream);
+    // var microphone = context.createMediaStreamSource(stream);
+
+    var microphone = audio_context.createMediaStreamSource(localMediaStream);
+    // window.mediaStreamSource = mediaStreamSource;
+    // p('window.mediaStreamSource', mediaStreamSource);
+
+    // var filter = context.createBiquadFilter();
+    // microphone | filter | context.destination
+    microphone.connect(filter);
+
+
+    // window.filter = filter;
+
+    // // Connect it to the destination to hear yourself (or any other node for processing!)
+    // mediaStreamSource.connect(context.destination);
+  });
+}
+
+// startVideoEcho();
+
+function startAudioFilter() {
+  var context = new AudioContext();
+
+  navigator.getUserMedia({audio: true}, function(stream) {
+    var microphone = context.createMediaStreamSource(stream);
+    var filter = context.createBiquadFilter();
+
+    // microphone -> filter -> destination.
+  }, p);
+
+  return context;
+}
+
+
+// var context = startAudioFilter();
+
+// smartjava / web-audio
+var startSmartjava = function() {
+  var context = new AudioContext();
+
+  var audioBuffer;
+  var sourceNode;
+
+  // load the sound
+  // setupAudioNodes();
+  // loadSound("wagner-short.ogg");
+
+  function setupAudioNodes() {
+    // create a buffer source node
+    sourceNode = context.createBufferSource();
+    // and connect to destination
+    sourceNode.connect(context.destination);
+  }
+
+  function playSound(buffer) {
+    sourceNode.buffer = buffer;
+    sourceNode.start(0);
+  }
+}
+
+// load the specified sound
+// function loadSound(url) {
+//     var request = new XMLHttpRequest();
+//     request.open('GET', url, true);
+//     request.responseType = 'arraybuffer';
+
+//     // When loaded decode the data
+//     request.onload = function() {
+
+//         // decode the data
+//         context.decodeAudioData(request.response, function(buffer) {
+//             // when the audio is decoded play the sound
+//             playSound(buffer);
+//         }, onError);
+//     }
+//     request.send();
+// }
+
+</script>
