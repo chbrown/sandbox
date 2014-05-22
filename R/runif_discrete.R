@@ -1,0 +1,26 @@
+runif(3000, 0, 1000)
+floor(runif(3000, 0, 1000))
+xtabs(~ floor(runif(3000, 0, 1000)))
+
+tabs = xtabs(~ floor(runif(3000, 0, 1000)))
+ftable(tabs)
+
+smpl = floor(runif(3000, 0, 1000)))
+levels(smpl) <- 1:1000
+ftable(xtabs(~ smpl))
+xtabs(~ smpl)
+xtabs(~ smpl, drop.unused.levels=FALSE)
+levels(smpl)
+xtabs(smpl, drop.unused.levels=FALSE)
+table(smpl)
+
+smpl = as.factor(smpl)
+table(smpl)
+xtabs(~ smpl)
+as.factor(smpl)
+is.factor(smpl)
+factor(smpl, levels=1:1000)
+smpl = factor(smpl, levels=1:1000)
+xtabs(~ smpl)
+table(smpl)
+ftable(table(smpl))
