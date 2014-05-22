@@ -1,6 +1,11 @@
 .DS_Store
-*.pyc
 *.log
 *.aux
-node_modules/
+# Python
+*.pyc
 .ipynb_checkpoints/
+# Node.js
+node_modules/
+# OCaml
+*.native
+_build/
