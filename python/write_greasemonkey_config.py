@@ -50,7 +50,7 @@ def add_script(tree, filepath):
         description=meta.get('description', ['No description'])[0],
         enabled='true',
         version=meta.get('version', ['?.?.?'])[0],
-        # runAt="document-end"
+        runAt='document-start',
     )
     tree.start('Script', attrs)
     # grant
