@@ -9,3 +9,4 @@ node_modules/
 # OCaml
 *.native
 _build/
+a.out
