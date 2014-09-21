@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<head>
+  <!-- http://ghkl/sandbox/html/video.html -->
+  <meta charset="utf-8">
+  <title>Video</title>
+  <script src="../static/lib/jquery.min.js"></script>
+  <script src="../static/lib/underscore.min.js"></script>
+  <script src="../static/lib/angular.min.js"></script>
+  <script src="../static/lib/ngStorage.min.js"></script>
+</head>
+<body ng-app="app" ng-controller="videoController">
+  <label>
+    <div>Video</div>
+  </label>
+
+  <h4>References</h4>
+  <ul>
+    <li>http://hdfvr.com/html5-video-recording</li>
+    <li>http://stackoverflow.com/questions/17331531/html5-capture-and-save-video</li>
+  </ul>
+</body>
+<script>
+/*jslint browser: true */ /*globals _, angular */
+var p = console.log.bind(console);
+// de-vendor
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+  navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+// controls
+
+var app = angular.module('app', ['ngStorage']);
+app.controller('videoController', function($scope, $localStorage) {
+  $scope.$storage = $localStorage;
+
+  // $scope.connect = connect
+});
+
+function connect() {
+  navigator.getUserMedia({video: true}, function(localMediaStream) {
+    // var media_el = document.getElementById('v1');
+    // media_el.src = window.URL.createObjectURL(localMediaStream);
+    window.localMediaStream = localMediaStream;
+    p(localMediaStream.getVideoTracks());
+
+  }, p);
+}
+
+connect();
+</script>
