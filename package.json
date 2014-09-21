@@ -16,7 +16,8 @@
     "js-yaml": "*",
     "natural": "*",
     "optimist": "*",
-    "underscore": "*"
+    "underscore": "*",
+    "ws": "*"
   },
   "staticDependencies": {
     "angular": "*",
