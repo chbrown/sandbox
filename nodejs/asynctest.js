@@ -1,4 +1,4 @@
-'use strict'; /*jslint indent: 2, node: true, es5: true */
+/*jslint node: true */
 var async = require('async');
 
 function add1(n, callback) {

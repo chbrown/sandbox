@@ -1,4 +1,4 @@
-'use strict'; /*jslint indent: 2, node: true, es5: true */
+/*jslint node: true */
 var sys = require('sys');
 var OAuth = require('oauth').OAuth;
 var google_request_url = "https://www.google.com/accounts/OAuthGetRequestToken";

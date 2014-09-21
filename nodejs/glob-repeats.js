@@ -1,4 +1,4 @@
-'use strict'; /*jslint indent: 2, node: true, es5: true */
+/*jslint node: true */
 var glob = require('glob');
 
 console.error('Compare the results of `echo **/*.py` to the following:\n');

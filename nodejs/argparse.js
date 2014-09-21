@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'use strict'; /*jslint indent: 2, node: true, es5: true */
+/*jslint node: true */
 
 var args = (function(argv) {
   var args = {};

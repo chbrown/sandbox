@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'use strict'; /*jslint node: true, es5: true, indent: 2 */
+/*jslint node: true */
 var util = require('util');
 
 console.log('big-little, hex, inspect(utf8), raw');

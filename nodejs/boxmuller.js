@@ -1,4 +1,4 @@
-'use strict'; /*jslint indent: 2, node: true, es5: true */
+/*jslint node: true */
 
 Math.log10 = function(x) {
   return Math.log(x) / Math.LN10; // Math.LN10 = Math.log(10.0)
