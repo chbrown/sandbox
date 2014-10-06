@@ -11,6 +11,7 @@
 <body ng-app="app" ng-controller="videoController">
   <label>
     <div>Video</div>
+    <video></video>
   </label>
 
   <h4>References</h4>
@@ -36,14 +37,63 @@ app.controller('videoController', function($scope, $localStorage) {
 });
 
 function connect() {
-  navigator.getUserMedia({video: true}, function(localMediaStream) {
-    // var media_el = document.getElementById('v1');
-    // media_el.src = window.URL.createObjectURL(localMediaStream);
+
+  var video_el = document.querySelector('video');
+  video_el.onloadedmetadata = function(ev) {
+    p('video.onloadedmetadata', ev);
+  };
+
+  // http://src.chromium.org/svn/trunk/src/chrome/test/data/webrtc/manual/constraints.html
+  navigator.getUserMedia({
+    video: {
+      mandatory: {
+        // minWidth: 640,
+        // minHeight: 480,
+        // minFrameRate: 60,
+        // maxAspectRatio
+        // maxWidth: 320,
+        // maxHeight: 240,
+      }
+    }
+  }, function(localMediaStream) {
+    p(localMediaStream);
+
     window.localMediaStream = localMediaStream;
-    p(localMediaStream.getVideoTracks());
+    var stream_url = URL.createObjectURL(localMediaStream);
+    p('Created ObjectURL', stream_url)
+
+    video_el.autoplay = true;
+    video_el.src = stream_url;
+
+    window.video_el = video_el;
 
   }, p);
 }
 
 connect();
+
+function printSources() {
+  MediaStreamTrack.getSources(function(sourceInfos) {
+    var audioSource = null;
+    var videoSource = null;
+
+    for (var i = 0; i != sourceInfos.length; ++i) {
+      var sourceInfo = sourceInfos[i];
+      if (sourceInfo.kind === 'audio') {
+        console.log(sourceInfo, sourceInfo.label || 'microphone');
+
+        // audioSource = sourceInfo.id;
+      } else if (sourceInfo.kind === 'video') {
+        console.log(sourceInfo, sourceInfo.label || 'camera');
+
+        // videoSource = sourceInfo.id;
+      } else {
+        console.log('Some other kind of source: ', sourceInfo);
+      }
+    }
+
+    // sourceSelected(audioSource, videoSource);
+  });
+}
+
 </script>
