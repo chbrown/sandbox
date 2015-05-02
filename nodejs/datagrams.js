@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/*jslint node: true */
 var dgram = require('dgram');
 var socket = dgram.createSocket('udp4');
 

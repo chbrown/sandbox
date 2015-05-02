@@ -1,4 +1,3 @@
-/*jslint node: true */
 var http = require('http');
 
 http.createServer(function (req, res) {

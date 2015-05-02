@@ -1,4 +1,3 @@
-/*jslint node: true */
 var async = require('async');
 
 function add1(n, callback) {
@@ -28,7 +27,6 @@ var callback = function (err, result) {
 };
 
 // make4add1mul3(callback);
-
 
 // 6 => 6 + 7 => 13 * 2 => 26
 

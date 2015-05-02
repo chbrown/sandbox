@@ -1,9 +1,3 @@
-/*jslint node: true */
-
-Math.log10 = function(x) {
-  return Math.log(x) / Math.LN10; // Math.LN10 = Math.log(10.0)
-};
-
 function padLeft(string, width, fill) {
   if (fill === undefined) fill = ' ';
   while (string.length < width) {
@@ -65,7 +59,7 @@ var padding = 0;
 var width = 0;
 function timeit(name, func) {
   var seconds_per_iteration = avg_runtime(func);
-  var magnitude = Math.log10(seconds_per_iteration);
+  var magnitude = Math.log(seconds_per_iteration) / Math.LN10; // Math.LN10 = Math.log(10.0)
   // padding is the number of digits needed to the left of the decimal point
   //   e.g.: 143.55 -> 3, 1.09 -> 1, 0.0093 -> 0
   padding = Math.max(padding, Math.ceil(magnitude));
@@ -82,7 +76,7 @@ var trig = function() {
   var a = Math.sqrt(-2 * Math.log(u1));
   var b = 2.0 * Math.PI * u2;
   var z1 = a * Math.cos(b);
-  var z2 = a * Math.sin(b);
+  // var z2 = a * Math.sin(b); // only need one
   return z1;
 };
 
@@ -97,7 +91,7 @@ var polar = function() {
   var c = Math.sqrt(-2 * Math.log(rad) / rad);
 
   var z1 = x1 * c;
-  var z2 = x2 * c;
+  // var z2 = x2 * c; // only need one
   return z1;
 };
 

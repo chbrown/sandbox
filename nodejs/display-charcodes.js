@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/*jslint node: true */
 var util = require('util');
 
 console.log('big-little, hex, inspect(utf8), raw');

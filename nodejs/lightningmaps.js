@@ -1,9 +1,8 @@
-/*jslint node: true */
 var WebSocket = require('ws');
 
 var ws = new WebSocket('ws://ws.lightningmaps.org/');
 
-ws.on('message', function(string, flags) {
+ws.on('message', function(string) { // (string, flags)
   var data = JSON.parse(string);
   var strokes = data.strokes || [];
   strokes.forEach(function(stroke) {

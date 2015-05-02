@@ -1,5 +1,3 @@
-/*jslint node: true */
-var sys = require('sys');
 var OAuth = require('oauth').OAuth;
 var google_request_url = "https://www.google.com/accounts/OAuthGetRequestToken";
 var google_access_url = "https://www.google.com/accounts/OAuthAuthorizeToken";

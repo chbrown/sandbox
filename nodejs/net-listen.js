@@ -1,10 +1,9 @@
-/*jslint node: true */
 var net = require('net');
 
 var server = net.createServer();
 server.on('listening', function() {
   console.log('server:listening -> %j', server.address());
-})
+});
 server.on('connection', function(socket) {
   console.log('server:connection');
 
@@ -29,10 +28,10 @@ server.on('connection', function(socket) {
 });
 server.on('error', function(err) {
   console.log('server:error', err);
-})
+});
 server.on('close', function() {
   console.log('server:close');
-})
+});
 
 // server.listen('/tmp/listen.sock');
 server.listen(6600);

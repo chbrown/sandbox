@@ -1,4 +1,3 @@
-/*jslint node: true */
 // var buffer = require('buffer');
 
 var _raw = new Buffer('frag', 'utf8');

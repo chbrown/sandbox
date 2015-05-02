@@ -1,4 +1,3 @@
-/*jslint node: true */
 var Q = require('q');
 
 // with Bluebird (doesn't work like I want)
@@ -19,7 +18,7 @@ function wait() {
   var deferred = Q.defer();
   console.log('creating deferred');
   // var p = (function(resolve, reject) {
-  var timeout = setTimeout(function() {
+  setTimeout(function() {
     console.log('resolving:patience');
     deferred.resolve('patience');
   }, 2000);

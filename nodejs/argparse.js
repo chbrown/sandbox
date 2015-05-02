@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/*jslint node: true */
 
 var args = (function(argv) {
   var args = {};

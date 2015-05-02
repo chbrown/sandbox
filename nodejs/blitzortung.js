@@ -1,4 +1,3 @@
-/*jslint node: true */
 var WebSocket = require('ws');
 
 // port is random between 8010 and 8019, inclusive

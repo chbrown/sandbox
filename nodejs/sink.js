@@ -1,8 +1,5 @@
 #!/usr/bin/env node
-/*jslint node: true */
-var path = require('path');
 var http = require('http');
-var child_process = require('child_process');
 var argv = require('optimist')
   .default({
     hostname: '127.0.0.1',

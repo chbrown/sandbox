@@ -1,4 +1,3 @@
-/*jslint node: true */
 var fs = require('fs');
 var eyes = require('eyes');
 var yaml = require('js-yaml');

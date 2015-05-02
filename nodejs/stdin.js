@@ -1,4 +1,3 @@
-/*jslint node: true */
 var data = '';
 process.stdin.resume();
 process.stdin.setEncoding('utf8');

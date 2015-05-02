@@ -1,4 +1,3 @@
-/*jslint node: true */
 var glob = require('glob');
 
 console.error('Compare the results of `echo **/*.py` to the following:\n');
