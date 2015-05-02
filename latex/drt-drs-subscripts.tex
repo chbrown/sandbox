@@ -1,0 +1,53 @@
+\documentclass{report}
+
+\usepackage{drs}
+\usepackage{adjustbox}
+
+\begin{document}
+
+\section*{Without adjustbox}
+
+Text before
+\drs{j f}{
+  John(j)\\
+  friend(f)\\
+  \ifdrs{m}{in-family(m)}{}{
+    friend-of(f, m)\\
+    consulted(j, f)
+  }
+}$_{subscript}$
+and after
+
+\section*{With adjustbox}
+
+Text before
+\adjustbox{valign=B}{
+  \drs{j f}{
+    John(j)\\
+    friend(f)\\
+    \ifdrs{m}{in-family(m)}{}{
+      friend-of(f, m)\\
+      consulted(j, f)
+    }
+  }%
+}$_{subscript}$
+and after
+
+\section*{With nested adjustbox}
+
+Text before
+\adjustbox{valign=M}{
+  \adjustbox{valign=B}{
+    \drs{j f}{
+      John(j)\\
+      friend(f)\\
+      \ifdrs{m}{in-family(m)}{}{
+        friend-of(f, m)\\
+        consulted(j, f)
+      }
+    }%
+  }$_{subscript}$
+}
+and after
+
+\end{document}
