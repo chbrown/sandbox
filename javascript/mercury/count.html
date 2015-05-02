@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<head>
+  <script src="../../static/lib/mercury.js"></script>
+</head>
+<body>
+  <p>Based on https://github.com/Raynos/mercury/blob/master/examples/count.js</p>
+  <main id="app"></main>
+</body>
+<script>
+/*jslint browser: true */ /*globals mercury */
+var h = mercury.h;
+
+var app_element = document.getElementById('app');
+var state = {clickCount: 0};
+
+// var hg = mercury;
+
+// var app_state = hg.state({
+//   value: hg.value(0),
+//   channels: {
+//     clicks: function(state) {
+//       console.log('incrementing state', state);
+//       state.value.set(state.value() + 1);
+//     }
+//   }
+// });
+
+function incrementClickCount() {
+  state = {clickCount: state.clickCount + 1};
+  loop.update(state.clickCount);
+}
+
+// console.log('initialized state', app_state);
+
+function renderClickView(clickCount) {
+  console.log('renderClickView(%s) called', clickCount);
+  return h('div.counter', [
+    'The state ', h('code', 'clickCount'),
+    ' has value: ' + clickCount + '. ', h('input.button', {
+      type: 'button',
+      value: 'Click me!',
+      // 'ev-click': hg.send(state.channels.clicks),
+      onclick: function(mouseEvent) {
+        console.log('onclick', mouseEvent);
+        incrementClickCount();
+      },
+      // 'ev-click': function(mouseEvent) {
+      //   console.log('ev-click', mouseEvent);
+      // },
+    })
+  ]);
+}
+
+// Note: You must create an instance of dom-delegator for ev-* to work.
+// mercury.Delegator();
+
+// hg.app(app_element, app_state, render);
+
+// diff: require('virtual-dom/vtree/diff'),
+// patch: require('virtual-dom/vdom/patch'),
+// create: require('virtual-dom/vdom/create-element'),
+// h: require('virtual-dom/virtual-hyperscript'),
+
+// function main(initialState, view, opts) {
+var loop = mercury.main(state.clickCount, renderClickView, {
+  diff: mercury.diff,
+  create: mercury.create,
+  patch: mercury.patch,
+});
+app_element.appendChild(loop.target);
+
+// return observ(loop.update);
+
+</script>
