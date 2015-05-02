@@ -1,4 +1,3 @@
-// "use strict"; /*jslint indent: 2 */
 var levenshtein_matrix = function(source, target) {
   var nrows = source.length + 1;
   // var source_chars = source.split('');

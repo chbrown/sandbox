@@ -1,4 +1,3 @@
-// "use strict"; /*jslint indent: 2 */
 // Originally rewritten at StackOverflow while working on belief contagion d3-powered graph-modeling UI
 // - http://stackoverflow.com/questions/9590225/is-there-a-library-to-generate-random-numbers-according-to-a-beta-distribution-f
 

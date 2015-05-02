@@ -1,4 +1,3 @@
-/*jslint indent: 2 */
 (function(exports) {
   "use strict";
   var ascii = [{
