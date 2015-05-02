@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>Upload</title>
+  <script src="../static/lib/underscore.js"></script>
+  <script src="../static/lib/angular.js"></script>
+  <!-- http://ghkl/sandbox/html/upload.html -->
+</head>
+<body ng-app="app" ng-controller="uploadCtrl">
+
+  <label style="display: block; margin: 10px 0">
+    <div><b>Upload</b></div>
+    <input type="file">
+  </label>
+
+  <b>Files</b>
+  <ol ng-repeat="file in files">
+    <!-- each file has the fields: name, size, type, lastModified, lastModifiedDate, webkitRelativePath -->
+    <li><pre ng-bind="file | json:'  '"></pre></li>
+  </ol>
+
+  <div>
+    <button ng-click="read()">Read</button>
+    <button ng-click="abort()">Abort</button>
+  </div>
+
+  <b>Reader</b>
+  <ul style="margin-left: 10px">
+    <li>Error: <code ng-bind="reader.error | json"></code></li>
+    <li>ReadyState: {{reader.readyState}}</li>
+    <li>Result == null? {{reader.result == null}}</li>
+    <li>Result.byteLength: {{reader.result.byteLength}}</li>
+  </ul>
+
+</body>
+<script>
+/*jslint browser: true */ /*globals _, angular */
+
+function createFileReader() {
+  var reader = new FileReader();
+  // the events are called in this order, when it succeeds:
+  // 1. onloadstart
+  // 2. onprogress
+  // 3. onload
+  // 4. onloadend
+  reader.onabort = function(ev) {
+    console.info('FileReader onabort.', ev);
+    // callback(new Error('FileReader aborted.'));
+  };
+  reader.onerror = function(err) {
+    console.info('FileReader onerror.', err);
+    // callback(err);
+  };
+  reader.onload = function(ev) {
+    console.info('FileReader onload.', ev);
+  };
+  reader.onloadstart = function(ev) {
+    console.info('FileReader onloadstart.', ev);
+  };
+  reader.onloadend = function(ev) {
+    console.info('FileReader onloadend.', ev);
+    // callback(null, reader.result);
+  };
+  reader.onprogress = function(ev) {
+    console.info('FileReader onprogress.', ev);
+  };
+  return reader;
+}
+
+var app = angular.module('app', []);
+
+// function FileUpload(img, file) {
+//   var reader = new FileReader();
+//   // this.ctrl = createThrobber(img);
+//   var xhr = new XMLHttpRequest();
+//   this.xhr = xhr;
+
+//   var self = this;
+//   this.xhr.upload.addEventListener("progress", function(e) {
+//         if (e.lengthComputable) {
+//           var percentage = Math.round((e.loaded * 100) / e.total);
+//           self.ctrl.update(percentage);
+//         }
+//       }, false);
+
+//   xhr.upload.addEventListener("load", function(e){
+//           self.ctrl.update(100);
+//           var canvas = self.ctrl.ctx.canvas;
+//           canvas.parentNode.removeChild(canvas);
+//       }, false);
+//   xhr.open("POST", "http://demos.hacks.mozilla.org/paul/demos/resources/webservices/devnull.php");
+//   xhr.overrideMimeType('text/plain; charset=x-user-defined-binary');
+//   reader.onload = function(evt) {
+//     xhr.sendAsBinary(evt.target.result);
+//   };
+//   reader.readAsBinaryString(file);
+// }
+
+app.controller('uploadCtrl', function($scope) {
+  var file_el = angular.element(document.querySelector('input[type="file"]'));
+
+  file_el.on('change', function(event) {
+    // <div><b>Event</b></div>
+    // <pre ng-bind="event | json:'  '"></pre>
+    console.log('input[type=file] change:', event);
+    $scope.$apply(function() {
+      $scope.files = event.target.files;
+    });
+  });
+
+  $scope.read = function() {
+    var reader = window.reader = $scope.reader = new FileReader();
+    // an empty reader has the following properties:
+    // "error": null
+    // "result": null
+    // "readyState": 0
+    // the events are called in this order, when it succeeds:
+    // 1. onloadstart
+    // 2. onprogress
+    // 3. onload
+    // 4. onloadend
+    var last_progress_loaded = 0;
+    reader.onabort = function(ev) {
+      $scope.$apply(function() {
+        console.info('FileReader onabort.', ev);
+        // callback(new Error('FileReader aborted.'));
+      });
+    };
+    reader.onerror = function(err) {
+      $scope.$apply(function() {
+        console.info('FileReader onerror.', err);
+      });
+      // callback(err);
+    };
+    reader.onload = function(ev) {
+      $scope.$apply(function() {
+        console.info('FileReader onload.', ev);
+      });
+
+    };
+    reader.onloadstart = function(ev) {
+      $scope.$apply(function() {
+        console.info('FileReader onloadstart.', ev);
+      });
+    };
+    reader.onloadend = function(ev) {
+      $scope.$apply(function() {
+        console.info('FileReader onloadend.', ev);
+        // callback(null, reader.result);
+      });
+    };
+    reader.onprogress = function(ev) {
+      $scope.$apply(function() {
+        console.info('FileReader onprogress.', ev);
+        // var data = new Uint8Array(file.result);
+        var chunk_length = ev.loaded - last_progress_loaded;
+        var chunk = new Uint8Array(reader.result, last_progress_loaded, chunk_length);
+        last_progress_loaded = ev.loaded;
+        // console.log('chunk_length', chunk_length);
+
+        var newlines = 0;
+        for (var i = 0; i < chunk.length; i++) {
+          if (chunk[i] == 10) {
+            console.log('\\n at', i);
+            newlines++;
+          }
+        }
+
+        // UInt8Array#entries() gives me [index, value] arrays
+        // UInt8Array#keys() gives me index values
+        // UInt8Array#values() gives me the actual values
+        // all of these return iterators, so you have to call
+        //     var it = UInt8Array#values();
+        //     console.log(it.next());
+        //     console.log(it.next());
+        //     console.log(it.next());
+
+        // for ArrayBuffer -> String conversion...
+        // http://stackoverflow.com/questions/17191945/conversion-between-utf-8-arraybuffer-and-string
+        // https://github.com/nfroidure/UTF8.js
+        function uintToString(uintArray) {
+            var encodedString = String.fromCharCode.apply(null, uintArray);
+            var decodedString = decodeURIComponent(escape(encodedString));
+            return decodedString;
+        }
+        uintToString(chunk);
+
+        console.log('Found %d newlines in chunk of length: %d', newlines, chunk_length);
+      });
+    };
+
+    // it has the following read* methods
+    // readAsArrayBuffer
+    // readAsBinaryString
+    // readAsDataURL
+    // readAsText
+
+    // read the first file
+    var file = $scope.files[0];
+    console.log('Reading %o as ArrayBuffer', file);
+    reader.readAsArrayBuffer(file);
+  };
+
+  $scope.abort = function() {
+    $scope.reader.abort();
+  };
+});
+
+
+</script>
