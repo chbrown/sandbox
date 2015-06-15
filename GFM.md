@@ -171,6 +171,23 @@ console.log('world');
 8. This should be the end.
 
 
+# Code block 1:
+
+---
+Output:
+
+```javascript
+javascript:console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet');
+```
+
+    javascript:console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet');
+
+* Lone bullet item:
+        javascript:console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet');
+
+> `javascript:console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet');`
+
+
 # Dashes:
 
 ---
