@@ -187,6 +187,15 @@ javascript:console.log('bookmarklet'); console.log('bookmarklet'); console.log('
 
 > `javascript:console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet');`
 
+> ```javascript:console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet');```
+
+- Another bullet:
+  > javascript:console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet');
+
+Literal HTML:
+
+<pre style="white-space: pre-wrap">javascript:console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet'); console.log('bookmarklet');</pre>
+
 
 # Dashes:
 
